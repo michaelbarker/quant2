@@ -8,6 +8,7 @@
 * summarize, de with predictions
 * brief regressions with logit and probit
 * outreg2 results
+* outreg2 summary statistics
 
 * week 2
 * more with logit and probit
