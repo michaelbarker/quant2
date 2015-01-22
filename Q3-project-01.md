@@ -75,6 +75,7 @@ To see all the labeled values for a variable, first find the label name with `de
 Then get the label values with `label list`.
 
 > In the future, you should check every variable that you use for numeric values that should be recoded to Stata missing. 
+> You can recode numeric values to Stata missing for multiple variables simultaneously using `mvdecode`
 
 7. Variable transformations 
 Use a natural log function to create three new variables containing the logs of height, weight, and bmi.
@@ -100,6 +101,7 @@ Another way to run tests after a regression uses the `test` command.
 Try testing each of the individual coefficients from the regression. 
 Compare the resulting p-values.
 `test` is a postestimation command, and will always use the results from the most recently run regression.
+
 
 10. Challenge question:
 The equation to calculate BMI is (weight in kg) divided by (height in meters squared).
