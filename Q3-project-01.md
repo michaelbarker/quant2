@@ -1,4 +1,4 @@
-# Project 1: Data set name 
+# Project 1: Ambulatory Care Data Set 
 McCourt School of Public Policy, Georgetown University
 
 ### Overview
@@ -35,24 +35,27 @@ Save your do-file and make sure it runs before moving on.
 > Tip: Another command you may want at the beginning of your do-file is `set more off`. 
 
 3. Use your basic descriptive commands to answer some questions about the data.
-These questions can all be answered with `summarize` and `tabulate`.
+These questions can all be answered with `summarize` , `tabulate` , and `histogram`.
 You might have to use some options, which are described on the help page for each command.
 The commands that you use to answer these questions should be in your do-file.
-  - Does this sample contain more males or females?
   - What is the average age of patients in this data set?
   - What is the median value of age in this data set?
   - What is the most common age of patients in this data set?
   - In descending order, what are the five most common ages of patients in this data set? 
+  - Generate a histogram showing the distribution of the age of patients in this data set. 
+  - Generate a second histogram treating age as a discrete variable and add a normal density line to the graph for comparison.
+  - Does it look like age is distributed normally in this sample?
 
 > Tip: Some people don't like typing capital letters all the time in Stata.
 Use the command `rename * , lower` to change all variable names to lower case.
 For more advanced uses of rename type `help rename group`. 
 
-4. We learned a lot about the distribution of age from the previous question. 
-We can get a picture of the overall distribution using histogram.
-  - Generate a histogram showing the distribution of the age of patients in this data set. 
-  - Generate a second histogram treating age as a discrete variable and add a normal density line to the graph for comparison.
-  - Does it look like age is distributed normally in this sample?
+4. We are interested in the relationship between tobacco use, weight, and blood pressure.
+Young children generally do not use tobacco, so we want to exclude them from this analysis.
+We want to create a sample composed of patients age 18 and older.
+Write a command to drop patients if their age is less than 18 years old. 
+(Alternatively, keep patients if their age is 18 years old or greater.)
+For more information, see `help keep`.
 
 5. We want to learn about the height and weight of patients in this data set.
 Find the two variables that give "Height in inches" and "Weight in pounds".
@@ -64,25 +67,56 @@ Instead you can
 
 6. What are the maximum and minimum values of the weight variable?
 For both weight and height, recode the "Blank" entries to Stata missing. 
-These are both labeled numeric variables.
-To find the underlying numeric values, first find the label name with `describe`.
+These are both labeled numeric variables. 
+How can you tell that they are labeled numeric variables? 
+You need to find the underlying numeric value of "Blank" before you can replace it with Stata missing.
+Try running a tabulate command without value labels. 
+To see all the labeled values for a variable, first find the label name with `describe`.
 Then get the label values with `label list`.
 
+> In the future, you should check every variable that you use for numeric values that should be recoded to Stata missing. 
+
 7. Variable transformations 
-- recalculate BMI from components, then compare
-- create log versions of bmi, height, and weight
+Use a natural log function to create three new variables containing the logs of height, weight, and bmi.
+For more information on using functions and function names, see `help functions`
+Label your new variables appropriately.
+Summarize the three original and three log variables in a single table.
+For each variable, verify that the original and log versions have the same number of observations.
 
 8. If-statements and indicators
- - fix missing values in usetobac
- - create indicator for current tobac
- - check creation with two-way tab
- - create indicator for overweight based on bmi
- - check creation with two summarize bmi if overweight==1 / 0 
+Create a new binary variable equal to one if a person is a current tobacco user.
+Use a two-way tabulation to verify your variable creation. 
+Make sure your two-way tabulation displays missing values.
+Create a new binary variable if a person is overweight, defined as having bmi of 27 or greater.
+Verify your variable creation with another two-way tabulation, displaying missing values.
+Create and verify a final binary variable equal to one if a person is both a current tobacco user and overweight. 
+How many patients in this data are both overweight and current tobacco users?
 
 9. Regressions and testing
- basic regression
- basic ftest
- basic lincom
+Run a regression of systolic blood pressure on age, height, weight, and bmi.
+Verify that this regression uses 1,464 observations.
+How would you test the null hypothesis that the coefficient on weight is zero in this regression?
+Another way to run tests after a regression uses the `test` command.
+Try testing each of the individual coefficients from the regression. 
+Compare the resulting p-values.
+`test` is a postestimation command, and will always use the results from the most recently run regression.
+
+10. Challenge question:
+The equation to calculate BMI is (weight in kg) divided by (height in meters squared).
+Create a new variable calculating BMI from the component height and weight variables.
+How does your new variable compare to the existing BMI variable?
+Create a new variable showing the difference between the original bmi variable and your new calculation.
+Examine these three variables in the browse window: `browse bmi bmi2 diffbmi`
+Does your calculation match the existing variable?
+What are the maximum and minimum values of diffbmi?
+Generate a histogram of diffbmi.
+The original bmi variable only contains integer values.
+Use a math function to make your version of bmi match the original variable.
+Replace diffbmi with the new difference in variables.
+Do they match?
+
+> You can compare two variables without generating a third, difference variable: `compare bmi bmi2`
+
 
 
 * Week 1
