@@ -68,19 +68,20 @@ Instead you can
   - Use the `lookfor` command to search variable names and labels
   - Search the documentation
 
-1.6. What are the maximum and minimum values of the weight variable?
-- For both weight and height, recode the "Blank" entries to Stata missing. 
+1.6. We want to learn more about the maximum and minimum values of the weight and height variables.
 - These are both labeled numeric variables. 
 - How can you tell that they are labeled numeric variables? 
 - You need to find the underlying numeric value of "Blank" before you can replace it with Stata missing.
 - Try running a tabulate command without value labels. 
 - To see all the labeled values for a variable, first find the label name with `describe`.
 - Then get the label values with `label list`.
-
+- For both weight and height, recode the "Blank" entries to Stata missing. 
+- What are the maximum and minimum values of the weight and height variables?
 > In the future, you should check every variable that you use for numeric values that should be recoded to Stata missing. 
 > You can recode numeric values to Stata missing for multiple variables simultaneously using `mvdecode`
 
 1.7. Variable transformations 
+- For BMI, recode "Missing data" or "Not calculated" as Stata missing value `.`
 - Use a natural log function to create three new variables containing the logs of height, weight, and bmi.
 - For more information on using functions and function names, see `help functions`
 - Label your new variables appropriately.
