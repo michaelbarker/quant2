@@ -3,9 +3,9 @@ McCourt School of Public Policy, Georgetown University
 
 ### Overview
 
-Investigate medical data
-This project will be on-going for the next three weeks
-Remember to save your do-file each week so you can pick up where you left off
+- Investigate medical data
+- This project will be on-going for the next three weeks
+- Remember to save your do-file each week so you can pick up where you left off
 
 ## Week 1: Review
 ### Key Ideas:
