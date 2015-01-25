@@ -45,6 +45,9 @@ The commands that you use to answer these questions should be in your do-file.
   - Generate a histogram showing the distribution of the age of patients in this data set. 
   - Generate a second histogram treating age as a discrete variable and add a normal density line to the graph for comparison.
   - Does it look like age is distributed normally in this sample?
+  - Is there any data currnetly classified as missing?
+  - What is the breakdown of patients by race? 
+  - Is there a relationship between sex and race?
 
 > Tip: Some people don't like typing capital letters all the time in Stata.
 Use the command `rename * , lower` to change all variable names to lower case.
