@@ -20,19 +20,20 @@ Take a few minutes to look at the documentation before opening the data set.
   - What type of data is in this data set?
   - What does one line of the data set represent?
   - What types of variables are in this data set?
+  - Which value represents missing for `RACE` variable?
 
 1.2. Open Stata and start a new do-file for this project
-The first command in your new do-file should change the working directory to your dedicated project folder. 
-You can get this command from the drop-down menu `File >> Change Working Directory`.
-Add a `use` command to open up the data set.
-Save your do-file and make sure it runs before moving on.
+- The first command in your new do-file should change the working directory to your dedicated project folder. 
+- You can get this command from the drop-down menu `File >> Change Working Directory`.
+- Add a `use` command to open up the data set.
+- Save your do-file and make sure it runs before moving on.
 
     ```
     cd "C:\Users\hoya99\Desktop\project1"  
     use NAMCS2010.dta, clear
     ```
 
-> Tip: Another command you may want at the beginning of your do-file is `set more off`. 
+> Tip: Another command you may want at the beginning of your do-file is `set more off` (why?). 
 
 1.3. Use your basic descriptive commands to answer some questions about the data.
 These questions can all be answered with `summarize` , `tabulate` , and `histogram`.
