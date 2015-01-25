@@ -1,4 +1,4 @@
-# Project 1: Ambulatory Care Data Set 
+# Project 1: Ambulatory Care 
 McCourt School of Public Policy, Georgetown University
 
 ### Overview
@@ -20,7 +20,6 @@ Take a few minutes to look at the documentation before opening the data set.
   - What type of data is in this data set?
   - What does one line of the data set represent?
   - What types of variables are in this data set?
-  - Which value represents missing for `RACE` variable?
 
 1.2. Open Stata and start a new do-file for this project
 - The first command in your new do-file should change the working directory to your dedicated project folder. 
@@ -46,7 +45,7 @@ The commands that you use to answer these questions should be in your do-file.
   - Generate a histogram showing the distribution of the age of patients in this data set. 
   - Generate a second histogram treating age as a discrete variable and add a normal density line to the graph for comparison.
   - Does it look like age is distributed normally in this sample?
-  - Is there any data currnetly classified as missing?
+  - Is there any data currnetly classified as missing (`.`)?
   - What is the breakdown of patients by race? 
   - Is there a relationship between sex and race?
 
