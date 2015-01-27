@@ -1,10 +1,14 @@
 # Project 1: Ambulatory Care Medical Data
 McCourt School of Public Policy, Georgetown University
 
+### Overview
+
+- During this project, we will investigate relationships in medical data 
 - This project will be on-going for the next three weeks
 - Remember to save your do-file each week so you can pick up where you left off
 
 ## Week 1: Review
+### Key Ideas:
 
  - Review Stata commands from last semester 
  - Practice working on a large project in a do-file
