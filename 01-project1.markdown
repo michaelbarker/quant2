@@ -1,14 +1,11 @@
-# Project 1: Ambulatory Care 
+# Project 1: Ambulatory Care Medical Data
 McCourt School of Public Policy, Georgetown University
 
-### Overview
-
-- Investigate medical data
 - This project will be on-going for the next three weeks
 - Remember to save your do-file each week so you can pick up where you left off
 
 ## Week 1: Review
-### Key Ideas:
+
  - Review Stata commands from last semester 
  - Practice working on a large project in a do-file
 
@@ -16,8 +13,8 @@ McCourt School of Public Policy, Georgetown University
 
 1.1. Download the data set and documentation from Blackboard. 
 Save the data set and documentation in a new folder dedicated to this project.
+As our project gets more complex, it will be important to keep all related files in the same folder.
 Take a few minutes to look at the documentation before opening the data set.
-  - What type of data is in this data set?
   - What does one line of the data set represent?
   - What types of variables are in this data set?
 
@@ -45,7 +42,7 @@ The commands that you use to answer these questions should be in your do-file.
   - Generate a histogram showing the distribution of the age of patients in this data set. 
   - Generate a second histogram treating age as a discrete variable and add a normal density line to the graph for comparison.
   - Does it look like age is distributed normally in this sample?
-  - Is there any data currnetly classified as missing (`.`)?
+  - Does `AGE` have any observations with values of missing (`.`)?
   - What is the breakdown of patients by race? 
   - Is there a relationship between sex and race?
 
@@ -58,6 +55,7 @@ Young children generally do not use tobacco, so we want to exclude them from thi
 - We want to create a sample composed of patients age 18 and older.
 - Write a command to drop patients if their age is less than 18 years old. 
 - (Alternatively, keep patients if their age is 18 years old or greater.)
+- Your data set should only have 3,885 observations after this step.
 - For more information, see `help keep`.
  
 1.5. We want to learn about the height and weight of patients in this data set.
@@ -122,33 +120,3 @@ Instead you can
 - Do they match?
 
 > You can compare two variables without generating a third, difference variable: `compare bmi bmi2`
-
-
-
-* Week 1
-Open data with use 
-data manipulation from Quant 1
-create log variables
-regression
-test
-lincom
-
-* Week 2
-Add data manipulation with egen and bysort
-create quadratic terms
-create indicator variables
-include in regressions
-test with multiple restrictions
-test linear combinations
-
-* Week 3
-More testing and linear combinations
-Other postestimation tests
-estimates store/use
-regression table output with outreg2 possibly estout
-outreg2 summary statistics
-
-
-
-
-
