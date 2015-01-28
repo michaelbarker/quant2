@@ -5,7 +5,6 @@ data manipulation from Quant 1
 create log variables
 regression
 test
-lincom
 
 * Week 2
 Add data manipulation with egen and bysort
