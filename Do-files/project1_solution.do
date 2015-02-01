@@ -1,8 +1,15 @@
-* Tell Stata not pause for more messages
+* Tell Stata not pause for -more- messages
 set more off
 
 *1.2
 * Change working directory
+
+* Mac style
+* cd "/Users/hoya99/MSPP/Stata_Recitation/quant2/Data/"
+
+* Windows style
+* cd "C:\Users\hoya99\MSPP\Stata_Recitation\quant2\Data"
+
 use "NAMCS2010.dta", clear
 
 *1.3
@@ -17,7 +24,7 @@ sum age, detail
 tab age, sort
 
 * Histogram 1
-histogram age
+* histogram age
 
 * Histogram 2
 * histogram age, discrete normal
@@ -26,8 +33,7 @@ histogram age
 tab age, m
 
 * Check missing values of all variables
-* net install mdesc.pkg
-* mdesc
+misstable summarize
 
 * Patient race
 tab raceun
@@ -70,10 +76,10 @@ replace htin=. if htin==-9
 sum wtlb htin
 
 * Hint: Use mvdecode to generate missing values
-* mvdecode _all, mv(-9)
+* mvdecode varlist, mv(-9)
 
 *1.7
-* Recode "Missing data" or "Not calculated" as Stata missing value `.`
+* Recode "Missing data" or "Not calculated" as Stata missing value (.)
 des bmi
 label list BMIF
 replace bmi=. if bmi==-9 | bmi==-7
@@ -113,9 +119,14 @@ replace overwt=0 if bmi<27
 tab bmi overwt,m
 
 * both overweight and current tobacco users
-gen overwt_current_tobac=.
+gen overwt_current_tobac=0
 replace overwt_current_tobac=1 if current_tobac==1 & overwt==1
-count if overwt_current_tobac==1
+replace overwt_current_tobac=. if current_tobac==. | overwt==.
+
+* twoway tab
+tab overwt current_tobac
+* one-way tab
+tab overwt_current_tobac
 
 *1.9
 * Examine missing values
@@ -147,9 +158,17 @@ gen diffbmi=bmi-bmi2
 sum diffbmi
 
 * Histogram of diffbmi
-histogram diffbmi
+* histogram diffbmi
 
 * Round bmi2 to bmi
 gen bmi3=floor(bmi2)
 replace diffbmi=bmi-bmi3
-browse bmi bmi3 diffbmi
+* browse bmi bmi3 diffbmi
+
+* Hint: compare
+compare bmi bmi2
+
+assert _N==3885
+
+
+
