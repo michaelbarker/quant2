@@ -3,7 +3,6 @@ set more off
 
 *1.2
 * Change working directory
-cd "/Users/huadehuo/Dropbox/MSPP/Stata_Recitation/quant2/Data/"
 use "NAMCS2010.dta", clear
 
 *1.3
@@ -21,14 +20,14 @@ tab age, sort
 histogram age
 
 * Histogram 2
-histogram age, discrete normal
+* histogram age, discrete normal
 
 * Check missing values of age
 tab age, m
 
 * Check missing values of all variables
-net install mdesc.pkg
-mdesc
+* net install mdesc.pkg
+* mdesc
 
 * Patient race
 tab raceun
@@ -142,7 +141,7 @@ sum bmi bmi2
 gen diffbmi=bmi-bmi2
 
 * Browse them all
-browse bmi bmi2 diffbmi
+* browse bmi bmi2 diffbmi
 
 * Summary of diffbmi
 sum diffbmi

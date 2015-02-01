@@ -5,6 +5,7 @@ data manipulation from Quant 1
 create log variables
 regression
 test
+- Note: For next year, reduce length of question 1. Too many sub-questions is discouraging.
 
 * Week 2
 Add data manipulation with egen and bysort
