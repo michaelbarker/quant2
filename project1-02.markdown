@@ -71,7 +71,7 @@ McCourt School of Public Policy, Georgetown University
 - Run a regression of diastolic blood pressure on the indicators for current tobacco use and overweight.
 - What null-hypothesis is tested by the following command? `test current_tobac overwt` 
 - Test the null-hypothesis that the coefficient on `current_tobac` is equal to the coefficient on `overwt`
-- Run the test command: `test current_tobac = overwt = 0`. How is test compare to the previous two tests? 
+- Run the test command: `test current_tobac = overwt = 0`. How does this test compare to the previous two tests? 
 
 1.15 Regressions with dummies and interaction with testing
 - Run a regression of diastolic blood pressure on current_tobac, overwt, and the indicator for overwt and current_tobac.
