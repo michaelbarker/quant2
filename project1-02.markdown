@@ -137,16 +137,18 @@ sum wtlb stdwtlb
 1.19 bysort
 - The bysort prefix allows you to repeat a single command over different groups within your data set.
 - Imagine you wanted summary statistics for males and females separately.
-- Here are two methods to accomplish this:
 ```
 summarize htin wtlb bpsys bpdias if sex==1
 summarize htin wtlb bpsys bpdias if sex==2
-* Alternative Method
+```
+- An alternative method to accomplish this
+```
 bysort sex: summarize htin wtlb bpsys bpdias
 ```
-
 - You can define bysort categories with more than one variable 
+```
 bysort sex raceun : tab current_tobac
+```
 
 - Summarize bpdias and bpsys for each combination of current_tobac and overwt 
 
@@ -160,6 +162,9 @@ bysort sex: egen mfaveht = mean(htin)
 gen mftall = .
 replace mftall = 1 if htin > mfaveht
 replace mftall = 0 if htin <= mfaveht
+replace mftall = . if htin==. | mfaveht==. 
+tab htin mftall , m
+bysort sex: tab htin mftall , m
 browse sex htin mfaveht mftall
 ```
 
