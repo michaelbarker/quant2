@@ -33,7 +33,7 @@ McCourt School of Public Policy, Georgetown University
 1.13. Regressions on dummies
 - The question uses the three indicator variables that you created in Question 1.8
 - Verfy your variable creation:
-
+```
 	. tab overwt current_tobac
 	
 	           |     current_tobac
@@ -53,12 +53,14 @@ McCourt School of Public Policy, Georgetown University
 		          1 |        135       10.42      100.00
 		------------|-----------------------------------
 		      Total |      1,296      100.00
-
+```
 - Run a regression of systolic blood pressure on the indicators for current tobacco use and overweight
 - The `test` command allows you to perform hypothesis tests using results from the most recent regression
 - `test` performs an F-test, which you will learn about in Quant class. For now, just focus on p-values
 - Test the hypothesis that the coefficient on current_tobac is equal to zero.
-- test current_tobac==0 
+```
+test current_tobac==0 
+```
 - Compare to the p-value reported in the regression results
 
 - Unless you run another regression, any test commands will continue to apply to the last one run.
