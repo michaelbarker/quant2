@@ -82,7 +82,7 @@ McCourt School of Public Policy, Georgetown University
 - Create a new variable equal to age-squared.
 - Run a regression of systolic blood pressure on current_tobac, overwt, age, and age-squared.
 - Test the null-hypothesis that the coefficients on age and age-squared are jointly equal to zero. 
-- Test the null-hypothesis that the coefficient on current_tobac coefficient on overwt are equal to each other.
+- Test the null-hypothesis that the coefficient on current_tobac and the coefficient on overwt are equal to each other.
 
 1.17 egen Variable Creation with multiple variables
 - Create a new variable called `bpave` equal to the average of systolic and diastolic blood pressure.
