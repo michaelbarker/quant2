@@ -123,7 +123,7 @@ browse med1-med8 nummeds
 ```
 sum wtlb
 egen meanwtlb = mean(wtlb)
-egen sdstlb = sd(wtlb)
+egen sdwtlb = sd(wtlb)
 browse wtlb meanwtlb sdwtlb
 gen stdwtlb = (wtlb-meanwtlb) / sdwtlb
 sum wtlb stdwtlb
