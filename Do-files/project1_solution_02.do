@@ -4,7 +4,7 @@ set more off
 
 *1.2
 * Change working directory
-use "NAMCS2010.dta", clear
+use "../Data/NAMCS2010.dta", clear
 * use "/Users/michael/Dropbox/Spring 15/Recitation/NAMCS2010_sample.dta"
 
 {
@@ -20,10 +20,10 @@ sum age, detail
 tab age, sort
 
 * Histogram 1
-histogram age
+* histogram age
 
 * Histogram 2
-histogram age, discrete normal
+* histogram age, discrete normal
 
 * Check missing values of age
 tab age, m
@@ -145,24 +145,22 @@ sum bmi bmi2
 gen diffbmi=bmi-bmi2
 
 * Browse them all
-browse bmi bmi2 diffbmi
+* browse bmi bmi2 diffbmi
 
 * Summary of diffbmi
 sum diffbmi
 
 * Histogram of diffbmi
-histogram diffbmi
+* histogram diffbmi
 
 * Round bmi2 to bmi
 gen bmi3=floor(bmi2)
 replace diffbmi=bmi-bmi3
-browse bmi bmi3 diffbmi
+* browse bmi bmi3 diffbmi
 
 * Hint: compare
 compare bmi bmi2
 }
-
-
 
 *1.11 - confirm sample
 *make sure we have 3885 observations
@@ -223,26 +221,26 @@ replace bpave = (bpsys + bpdias)/2
 
 egen bpave2 = rowmean(bpsys bpdias)
 
-help egen
-browse xray-othimage
+* help egen
+* browse xray-othimage
 describe xray-othimage
 tab1 xray-othimage , nolabel missing
 egen numimage = rowtotal(xray-othimage)
-browse xray-othimage numimage 
+* browse xray-othimage numimage 
 
-browse med1-med8
+* browse med1-med8
 describe med1-med8
 tab med1 if med1 < 0
 tab med1 if med1 < 0 , nol
 mvdecode med1-med8 , mv(-9) 
 egen nummeds = rownonmiss(med1-med8) 
-browse med1-med8 nummeds
+* browse med1-med8 nummeds
 
 *1.18
 sum wtlb
 egen meanwtlb = mean(wtlb)
 egen sdwtlb = sd(wtlb)
-browse wtlb meanwtlb sdwtlb
+* browse wtlb meanwtlb sdwtlb
 gen stdwtlb = (wtlb-meanwtlb) / sdwtlb
 sum wtlb stdwtlb
 
@@ -250,7 +248,7 @@ sum wtlb stdwtlb
 sum htin
 egen meanhtin = mean(htin)
 egen sdhtin = sd(htin)
-browse htin meanhtin sdhtin
+* browse htin meanhtin sdhtin
 gen stdhtin = (htin-meanhtin) / sdhtin
 sum htin stdhtin
 
@@ -275,7 +273,7 @@ replace mftall = 1 if htin > mfaveht
 replace mftall = 0 if htin <= mfaveht
 replace mftall = . if htin==. | mfaveht==.
 
-browse sex htin mfaveht mftall
+* browse sex htin mfaveht mftall
 
 *creating age variable
 bysort age: egen avgwtlb  = mean(wtlb)
