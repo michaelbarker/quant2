@@ -12,7 +12,7 @@ McCourt School of Public Policy, Georgetown University
 ### Overview
 
 - This week, it is very important to save all project files to a dedicated folder.
-- We will be creating several output files this week, and they will save to your working directory, wherever that may be.
+- We will be creating output files this week, which will save to your working directory, wherever that may be.
 - If you're unsure about the location of your working directory, please ask.
 
 ### Questions
@@ -46,16 +46,15 @@ McCourt School of Public Policy, Georgetown University
 - Suppose we want to know the change in predicted systolic blood pressure for a male tobacco user 
 - We could just calculate the sum of the coefficients: `display 3.00 + -1.10`
 - Or: `display "The combined effect is: " _b[current_tobac] + _b[male]`
-- We could also test if the combined change is different from zero using an f-test: 
-  `test current_tobac + male = 0`
+- We could also test if the combined change is different from zero: `test current_tobac + male = 0`
 - But, what if we want to know the confidence interval around the combination?
 - We need to calculate statistics for a "linear combination" of coefficients: `lincom current_tobac + male`
 - How do the statistics displayed after `lincom` compare with the previous output from `test` and `display`?
-- What is the total change in predicted `bpsys` from one additional pound of weight and one additional year of age? 
-- What is the total change from the "freshman 15"? (15 additional pounds of weight and one additional year of age) 
+- What is the total change in predicted `bpsys` from one more pound of weight and one more year of age? 
+- What is the total change from the "freshman 15"? (15 pounds of weight and one year of age) 
 - What is the combined change of being male and having 10 additional pounds of weight? 
 - Is the above combination statistically different from zero?
-- What difference in weight would cause a tobacco user and a non-user to have the same predicted value of `bpsys`?
+- What difference in weight would cause a tobacco user and a non-user to have equal predicted value of `bpsys`?
 
 1.25 Other Postestimation Tests
 - We have covered two postestimation commands so far: `test` and `lincom`
@@ -91,13 +90,15 @@ twoway scatter bmi pr_bmi wtlb
 - Add the new variable to the previous twoway scatter plot. (Make sure "Weight" remains on the x-axis.)
 - Summarize actual bmi, predicted bmi, and the residuals. 
 - Calculate the same summary statistics for the groups defined by every possible combination of `male` and `current_tobac` (hint: use bysort).
-- Which group had the worst predictions for bmi? (Define "worst" as the largest absolute value of average residuals.)
+- Which group had worst predictions for bmi? 
+
+  (Define "worst" as the largest absolute value of average residuals.)
 - Was the average predicted value of bmi higher or lower than the actual average bmi for that group? 
 
 1.27 Table of Estimates
 - Postestimation commands always apply to the most recently run estimation command
 - That means there is only one set of estimates that are "active" at any time
-- As you've seen, the active estimates can be "replayed" by typing the estimation command again without any variables 
+- The active estimates can be "replayed" by typing the estimation command again without any variables 
 - You can also see the currently active results, exactly as Stata stores them, by typing `ereturn list`
 - Some postestimation commands require multiple estimation results at the same time.
 - For example, you can make a table out of multiple estimation results.
