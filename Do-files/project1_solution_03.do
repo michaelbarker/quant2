@@ -7,7 +7,6 @@ set more off
 use "../Data/NAMCS2010.dta", clear
 * use "/Users/michael/Dropbox/Spring 15/Recitation/NAMCS2010_sample.dta"
 
-{
 *1.3
 * Change variable name to lower case
 rename *, lower
@@ -41,6 +40,7 @@ tab2 sex raceun, chi2
 
 *1.4
 * Drop patients if their age is less than 18 years old.
+* Update sample to age 16 or older in week 3
 drop if age<16
 
 *1.5
@@ -160,7 +160,7 @@ replace diffbmi=bmi-bmi3
 
 * Hint: compare
 compare bmi bmi2
-}
+
 
 *1.11 - confirm sample
 *make sure we have 3885 observations
@@ -282,18 +282,104 @@ replace ageheavy = 1 if wtlb > avgwtlb
 replace ageheavy = 0 if wtlb <= avgwtlb
 replace ageheavy = . if wtlb==. | avgwtlb==.
 
-* A few commands from week 3:
+* 1.21 Create a dummy variable for male
 codebook sex
 gen male = sex==2
+
+* Create dummy variable for overweighted male
 gen male_overwt = male*overwt
+
+* Regression of systolic blood pressure on
+* male, overwt, and male_overwt
 regress bpsys male overwt male_overwt
 
+* Test coefficients
+test overwt + male_overwt=0
+test overwt=2*male
+
+* 1.22 update sample
+* Change command 1.4
+count
+
+* 1.23 replay most recent estimates
+regress
+
+* 1.24 Linear combinations of coefficients
+regress bpsys current_tobac male wtlb age
+
+* change in predicted systolic blood pressure for a male tobacco user
+display "The combined effect is: " _b[current_tobac] + _b[male]
+
+* Test combined change
+test current_tobac + male = 0
+
+* Confidence interval of the combination
+lincom current_tobac + male
+
+* Combined change of wtlb and age
+lincom wtlb + age
+
+* Combined change of 15lbs weight and one year of age
+lincom 15*wtlb + age
+
+* Combined change of being male and having additional 10lbs weight
+lincom 10*wtlb + male
+
+* Difference in weight cause a tobacco user and a non-user to have
+* equal predicted value of bpsys
+
+* Non linear combination
+nlcom _b[current_tobac] / _b[wtlb]
+
+
+* 1.25 Other Postestimation Tests
+* Breusch-Pagan / Cook-Weisberg test for heteroskedasticity
+hettest
+
+* link test for model specification
+linktest
+
+* Ramsey RESET test for omitted variables
+ovtest
+
+* 1.26 Predict values
+* Manual approach
 regress bmi wtlb
-predict pr_bmi , xb
-predict resid , re
-twoway scatter bmi pr_bmi resid wtlb
+gen pr_bmi_manual = _b[_cons] + _b[wtlb] * wtlb
+
+* use predict postestimation command
+regress
+predict pr_bmi, xb
+twoway scatter bmi pr_bmi wtlb
+
+* Generate residuals
+predict pr_bmi_residuals, residuals
+twoway (scatter bmi pr_bmi pr_bmi_residuals wtlb)
+
+* Summerise actual bmi, predicted bmi, and residuals
+sum bmi pr_bmi pr_bmi_residuals
+
+* Descriptive stats by male and current)tobac
+bysort male current_tobac: sum bmi pr_bmi pr_bmi_residuals
+* male = 1, current_tobac = 1 has the worst prediction
+* Avg.residual = -2.579053 for that group
+
+
+* 1.27 Table of estimates
+* Current active result
+ereturn list
+
+* Store and load regression result
+regress bpsys current_tobac overwt 
+estimates store basemodel
+regress bpsys current_tobac overwt overwt_current_tobac 
+estimates store bettermodel
+regress bpsys current_tobac overwt overwt_current_tobac age age2 bmi_log
+estimates store bestmodel
+estimates table basemodel bettermodel bestmodel
 
 * 1.28 Outreg2 Table
+cap ssc install outreg2
 reg bpsys current_tobac overwt numimage nummeds mftall ageheavy
 outreg2 using bpbasic , replace excel word
 reg bpdias current_tobac overwt numimage nummeds mftall ageheavy
