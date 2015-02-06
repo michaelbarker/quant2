@@ -22,5 +22,3 @@ estimates store/use
 regression table output with outreg2 possibly estout
 outreg2 summary statistics
 
-
-

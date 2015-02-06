@@ -41,7 +41,7 @@ tab2 sex raceun, chi2
 
 *1.4
 * Drop patients if their age is less than 18 years old.
-drop if age<18
+drop if age<16
 
 *1.5
 * Height and weight?
@@ -282,8 +282,34 @@ replace ageheavy = 1 if wtlb > avgwtlb
 replace ageheavy = 0 if wtlb <= avgwtlb
 replace ageheavy = . if wtlb==. | avgwtlb==.
 
+* A few commands from week 3:
+codebook sex
+gen male = sex==2
+gen male_overwt = male*overwt
+regress bpsys male overwt male_overwt
 
+regress bmi wtlb
+predict pr_bmi , xb
+predict resid , re
+twoway scatter bmi pr_bmi resid wtlb
 
+* 1.28 Outreg2 Table
+reg bpsys current_tobac overwt numimage nummeds mftall ageheavy
+outreg2 using bpbasic , replace excel word
+reg bpdias current_tobac overwt numimage nummeds mftall ageheavy
+outreg2 using bpbasic , append excel word
 
+* 1.29 Fancy Outreg2 Table
+lab var current_tobac "Uses Tobacco"
+lab var overwt "BMI above 27"
+lab var numimage "Number Image Tests"
+lab var nummeds "Number Medications"
+lab var mftall "Above Ave. Height for Gender"
+lab var ageheavy "Above Ave. Weight for Age"
+
+reg bpsys current_tobac overwt numimage nummeds mftall ageheavy
+outreg2 using bpfancy , replace excel label ctitle(BP Systolic) dec(2) word pvalue
+reg bpdias current_tobac overwt numimage nummeds mftall ageheavy
+outreg2 using bpfancy , append excel label ctitle(BP Diastolic) dec(2) word pvalue
 
 
