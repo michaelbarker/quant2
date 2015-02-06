@@ -11,19 +11,19 @@ McCourt School of Public Policy, Georgetown University
 
 ### Overview
 
-- This week, it is very important to save all project files to a dedicated folder 
-- We will be creating several output files this week, and they will save to your working directory, wherever that may be 
+- This week, it is very important to save all project files to a dedicated folder.
+- We will be creating several output files this week, and they will save to your working directory, wherever that may be.
 - If you're unsure about the location of your working directory, please ask.
 
 ### Questions
 
 1.21 Review Question
 - Create a new indicator variable for patients who are male.
-- Create a second indicator variable, `male_overwt` for patients who are both male and overweight.
+- Create a second indicator variable, `male_overwt`, for patients who are both male and overweight.
 - Hint: try to create `male_overwt` using multiplication, not if-statements.  
-- Run a regression of systolic blood pressure on male, overwt, and male_overwt. 
-- Test the null hypothesis that overweight and male_overwt are jointly equal to zero.
-- Test the null hypothesis that the coefficient on overwt is equal to 2 times the coeffiecient on male.
+- Run a regression of systolic blood pressure on `male`, `overwt`, and `male_overwt`. 
+- Test the null hypothesis that `overwt` and `male_overwt` are jointly equal to zero.
+- Test the null hypothesis that the coefficient on `overwt` is equal to 2 times the coeffiecient on `male`.
 
 1.22 Update Sample
 - It's a fact of life, we all make mistakes
@@ -39,30 +39,31 @@ McCourt School of Public Policy, Georgetown University
 - The next question is going to require you to run many postestimation tests.
 - Sometimes when you're running these tests, you need to review the regression results, but they're already gone from the review window.
 - You can "replay" the last estimation results by retyping the command with no variables.
-- Type `regress` to re-display the most recent regression results.
+- Type `regress` to replay the most recent regression results.
 
 1.24 Linear Combinations of Coefficients
 - Run the following regression: `regress bpsys current_tobac male wtlb age`
-- Suppose we want to know the change in predicted blood pressure for a male tobacco user 
+- Suppose we want to know the change in predicted systolic blood pressure for a male tobacco user 
 - We could just calculate the sum of the coefficients: `display 3.00 + -1.10`
 - Or: `display "The combined effect is: " _b[current_tobac] + _b[male]`
-- We could also test if the combined change is different from zero: `test current_tobac + male = 0`
+- We could also test if the combined change is different from zero using an f-test: 
+  `test current_tobac + male = 0`
 - But, what if we want to know the confidence interval around the combination?
 - We need to calculate statistics for a "linear combination" of coefficients: `lincom current_tobac + male`
-- How do the statistics displayed after `lincom` compare with the previous output from `test` and `display`. 
-- What is the total change in predicted bpsys from one additional pound of weight and one additional year of age? 
+- How do the statistics displayed after `lincom` compare with the previous output from `test` and `display`?
+- What is the total change in predicted `bpsys` from one additional pound of weight and one additional year of age? 
 - What is the total change from the "freshman 15"? (15 additional pounds of weight and one additional year of age) 
 - What is the combined change of being male and having 10 additional pounds of weight? 
 - Is the above combination statistically different from zero?
-- What difference in weight would cause a tobacco user and a non-user to have the same predicted value of bpsys?
+- What difference in weight would cause a tobacco user and a non-user to have the same predicted value of `bpsys`?
 
 1.25 Other Postestimation Tests
 - We have covered two postestimation commands so far: `test` and `lincom`
-- In general, postestimation refers to commands that are run after an estimation command such as regress, and use the results from that command. 
-- You will be learning other estimation commands this semester, in addition to regress. (probit, logit)
+- In general, postestimation refers to commands that are run after an estimation command such as `regress`, and use the results from that command. 
+- You will be learning other estimation commands this semester, in addition to regress. (`probit`, `logit`)
 - Each estimation command has a slightly different set of postestimation commands available. 
 - Look at the postestimation commands available after regress with: `help regress postestimation`
-- You will be using a few of these postestimation commands throughout quant classes and thesis
+- You will be using a few of these postestimation commands throughout quant classes and thesis.
 - Try running the following tests, but don't worry about the meaning of the output for now.
 ```
 hettest 
@@ -73,15 +74,18 @@ ovtest
 1.26 Predicted Values 
 - Another popular activity after estimation is generating predicted values.
 - This can be done manually for parsimonious models (few variables).
-- With larger models, the predict command is much easier.
-- Both methods are demonstrated below:
 ```
 regress bmi wtlb
 gen pr_bmi_manual = _b[_cons] + _b[wtlb] * wtlb
+```
+- Usually, the `predict` postestimation command is an easier method. 
+- The `predict` method is demonstrated below, after replaying the regression results. 
+```
+regress
 predict pr_bmi , xb
 twoway scatter bmi pr_bmi wtlb
 ```
-- You can generate the predicted value of y using the `xb` option of the predict command, like above.
+- You can generate the predicted value of y using the `xb` option of `predict`, like above.
 - Or you could generate residuals by changing the `xb` option to `residuals`
 - Generate a new variable containing the residuals from the previous regression.
 - Add the new variable to the previous twoway scatter plot. (Make sure "Weight" remains on the x-axis.)
