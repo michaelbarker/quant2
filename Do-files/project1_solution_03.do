@@ -1,3 +1,5 @@
+* End of Project 1 Survey
+* http://goo.gl/pySFge
 * Tell Stata not pause for -more- messages
 clear
 set more off
