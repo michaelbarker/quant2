@@ -1,0 +1,162 @@
+/*******************************************************************************
+  Recitation 6: Factor Variables 
+ 
+ SWBAT: 
+ - Use factor variables in regression commands for indicators and interactions. 
+ - Use postestimation commands with factor variables.
+
+*******************************************************************************/
+
+
+/*************************************************************/
+*Review questions
+
+*1. Open the nlsw88 example dataset
+
+*2. Regress wage on union, years of education completed, and the interaction of years of education completed and union.
+
+*3. Plot a scatter and linear fit line for wage (y-axis) vs. education (x-axis) with separate plots for union and non-union members all on the same graph . 
+
+*4. Create a (bar) graph of average wage by race with separate plots for union and non-union members.
+
+
+
+/*************************************************************/
+
+
+/*******************************************************************************
+
+ What is a factor variable?
+ You will not hear the words "factor variable" in Quant.
+ "factor variable" is just a term for categorical variables that is used in
+ other, non-Quant, contexts.
+ Consider it Stata jargon for these shortcuts for creating dummies and interactions.
+
+*******************************************************************************/
+
+* help factor variables
+* help fvvarlist
+
+clear
+sysuse nlsw88 
+
+* Factor variables are "hidden"
+* They act just like 1/0 indicator variables, but you never actually see them.
+* For example:
+tab race, gen(r_)
+sum r_* i.race
+* One indicator is left out as the baseline.
+* list r_* i.race in 1/15
+
+
+* Usual use is in regressions.
+* How does wage vary with race?
+* Could generate two indicator variables.
+reg wage i.race
+* What is baseline category?
+
+* What if I want to change it?
+reg wage ib2.race
+
+* Two indicators
+reg wage married union
+
+* No difference to write them using factor variable notation:
+reg wage i.married i.union
+
+* Factor variables make it easy to work in regressions with categorical variables that have more than two groups quickly or many dummies at once:
+reg wage i.race i.industry i.occupation
+
+
+
+* We can also use factor variables for interactions:
+reg wage i.married i.union married#union
+
+* But here it does matter if we use factor variable notation for binary variables
+reg wage married union married#union
+
+* Stata gets confused when you use the same variable normally and as a factor variable.
+* If you're going to use a variable in a factor variable interaction, write the
+* indicator as a factor variable, too.
+
+* An even shorter cut for the above:
+reg wage i.married##i.union
+
+
+
+
+* What about continuous variable interactions?
+reg wage age i.married i.married#age
+* Nope, Stata gives us indicators and interactions for every value of age.
+
+* With factor variables, all variables are assumed to be categorical unless otherwise specified:
+* Specify them with c.
+reg wage c.age i.married i.married#c.age
+
+* What if we forget one of the c.?
+* It is assumed to be continuous, so no problem. 
+reg wage age i.married i.married#c.age
+
+
+
+* How about F-tests on our new factor variables?
+test i.race
+* Factor variables don't work with the test command. 
+* Instead, we need to specify coefficient names.
+* You can see the coefficient names if you "replay" the previous regression, with the coeflegend option.
+* Note: we saw "replay" in week 3, on F-tests.
+regress, coeflegend
+* Whatever is in the brackets is the coefficient name, according to Stata and the test command.
+test 2.race 3.race
+test 3.race=0.5
+
+* Another option is to use the "testparm" version of the test command.
+* testparm allows a varlist, including factor variables
+testparm i.race
+testparm i.industry
+
+
+
+* The same approach works to test interactions with continuous variables
+reg wage age i.married i.married#c.age
+regress, coeflegend
+
+* Using test
+test 1.married#c.age
+test 1.married#c.age 1.married
+
+* Using testparm
+testparm i.married i.married##c.age
+
+
+
+
+
+/*************************************************************/
+*In-Class Exercises using the nlsw88 example dataset:
+
+*1. Using factor variables, regress wage (dependent variable) on union status,  years of education completed, the interaction of union and education, race (set black as the omitted category), total work experience, and job tenure.
+
+*2. Test whether there is a statistically significant relationship between  wage and education for union members in the above model.
+
+*3. Add industry as an independent variable in the regression from #1 and test whether there is a statistically significant relationship between wage and industry.  
+
+
+
+/*************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,6 @@
+Opinion Data: Many categorical variables, few or no continuous variables, individual data, repeated cross-sections for multiple countries, 
+Afrobarometer
+Arab barometer
+World Values Survey – No redistribution, must register and download from website
+HMDA – county level mortgage data
+

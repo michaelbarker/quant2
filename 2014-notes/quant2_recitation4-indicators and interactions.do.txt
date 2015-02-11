@@ -1,0 +1,208 @@
+﻿/*******************************************************************************
+ Recitation 4: Creating Indicators and Interactions 
+ 
+ SWBAT: 
+         - Create indicator variables and interactions from categorical variables
+        - Create new categorical variables using recode or egen_cut()
+
+
+*******************************************************************************/
+* Making indicator variables is a common task in Stata
+* Indicator variable is a 1/0 variable indicating whether that observation is
+* part of some group or has some characteristic
+
+
+* We made indicators in first semester. I don't know how much people remember.
+* Skip examples if not necessary...
+
+
+* We will look at nhanes2, individual data containing some demographics and 
+* medical test results. 
+clear
+webuse nhanes2
+
+
+/*
+Note: if webuse doesn't work for anyone, use this command instead:
+use http://www.stata-press.com/data/r12/nhanes2
+*/
+
+
+* This data already has many indicators created from categorical variables.
+* Look at female indicator:
+list sampl sex female in 1/20
+* Look at cross-tab
+tab2 sex female, miss
+
+
+* Look at black indicator:
+list sampl race black in 1/20
+* Look at cross-tab
+tab2 race black, miss
+
+
+
+
+* Create indicators for white
+codebook race
+* notice value labels, no missing values.
+gen white=0
+replace white=1 if race==1
+tab2 race white, miss
+
+
+
+
+* Create an indicator for never had heart attack
+
+
+* Having trouble finding the right variable? 
+* Search the variable names and labels with lookfor
+lookfor heart attack
+
+
+gen noheartatk = 0
+replace noheartatk = 1 if heartatk==0
+tab heartatk noheartatk, miss
+* Oops, forgot about missing values:
+replace noheartatk = . if heartatk==.
+tab heartatk noheartatk, miss
+
+
+
+
+* We can also create indicators with recode:
+* create an indicator if a person is a senior (age 65+)
+recode age (20/64=0) (65/74=1) , gen(senior)
+label variable senior "1= age 65+ , 0= age<65)"
+
+
+* What if we want to create indicator variables for many different categories:
+* Generate dummies for each value of agecat
+* Examine agegrp, looking for missing values:
+tab agegrp
+tab agegrp, nol miss
+* We can use the generate(stubname) option of tabulate
+help tab
+tab agegrp, gen(agegrp_)
+* Look at output
+sort age
+browse age agegrp agegrp_*
+
+
+* What if we want to create indicator variables, but don't have a categorical variable?
+* Example: generate 3 indicators based on 20 unit intervals of location (with the extra 4 in the last group)
+* examine location variable, check for missing values:
+tab location, m
+
+
+* One option is to create indicators from the original variable
+gen loc_1 = 0
+replace loc_1 = 1 if location>=1 & location<=20
+label variable loc_1 "location 1-20"
+
+
+gen loc_2 = 0
+replace loc_2 = 1 if location>=21 & location<=40
+label variable loc_2 "location 21-40"
+
+
+gen loc_3 = 0
+replace loc_3 = 1 if location>=41 & location<=64
+label variable loc_3 "location 41+"
+
+
+
+
+* A better way is to first create the categorical variable, then create indicators
+recode location (1/20=1 "1-20") (21/40=2 "21-40") (41/64=3 "41+") , gen(locgrp)
+* show new variable
+tab locgrp
+* Verify new variable, including missing values
+tab location locgrp, missing
+
+
+* Now, quickly generate indicators
+tab locgrp, gen(locgrp_)
+sort location
+* Browse all location variables:
+browse loc*
+
+
+* We can also use our new categorical variable with by: 
+bysort locgrp: sum height weight
+
+
+* Using recode and tab, gen() is a good strategy for discrete variables, but what about continuous variables?
+* The recode command only works on categorical variables. 
+* If the original variable has non-integer values (decimal places), recode will not work. 
+
+
+* Create indicators for 3 categories of height.
+* We still want to start with a categorical variable. 
+* We could create one using a series of if statements, like so:
+
+
+gen heightgrp = .
+replace heightgrp = 1 if height >= 130 & height < 150
+replace heightgrp = 2 if height >= 150 & height < 170
+replace heightgrp = 3 if height >= 170 & height < .
+* Be careful about which group contains the cut-points
+* Remember, . is the biggest number Stata can hold. Don't include it in the largest category by mistake.
+* If we want to label these values:
+* We can create this code using the "Manage Value Labels" dialogue box, from the Properties Window.
+label define heightgrp 1 ">= 130 and < 150" 2 ">= 150 and < 170" 3 ">= 170"
+label values heightgrp heightgrp
+
+
+* Verify new variable:
+tab heightgrp, m
+* We can't use tab twoway to verify our categorical variables anymore:
+tab height heightgrp, m
+* Instead, use bysort: summarize
+bysort heightgrp: sum height
+* Look at min and max for each category
+
+
+* If we have many groups, we can use an egen function to simplify this process:
+help egen
+* Cut takes the lower bounds of each group.
+* You need to specify one more cut-point than the number of groups you want.
+* Specify four cut-points for three groups.
+* final cut-point should be higher than highes value of height.
+egen heightgrp2 = cut(height) , at(130, 150, 170, 201) label
+bysort heightgrp2: sum height
+
+
+* Are our two heightgrp variables equal?
+tab heightgrp heightgrp2, miss nol
+
+
+* Finally, we can create our indicator variables
+tab heightgrp2 , gen(heightgrp_)
+sort height
+browse height*
+
+
+* The last type of indicator variable we will discuss is an interaction variable.
+* An interaction variable identifies a group that has two specific characteristics, 
+* and each characteristic has its own indicator variables. 
+
+
+* For example, we want to identify senior citizens who have suffered heart attacks
+tab senior female, miss
+* The group in the bottom right-hand corner
+
+
+* Approach 1: if-statements
+gen sen_fem=0
+replace sen_fem = 1 if senior==1 & female==1
+replace sen_fem = . if senior==. & female==.
+br senior female sen_fem
+bysort sen_fem: tab senior female
+
+
+* Approach 2: multiplication ( 0*0=0, 0*1=0, 1*1=1 )
+gen sen_fem2 = senior*female
+br senior female sen_fem sen_fem2
+tab sen_fem sen_fem2

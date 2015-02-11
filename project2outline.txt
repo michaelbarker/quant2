@@ -1,0 +1,42 @@
+* Data:
+Should be in either .csv or excel format
+(But we can format it however we want)
+
+Plenty of categorical variables
+In class focus is on individual data: birthweight, wages
+But, also discuss crime and police example on cities
+Maybe something with industry and occupation categories
+Categories should come in as strings, then use encode
+
+* Week 1
+import excel or delimited 
+Simple indicator creation
+regression
+test
+indicators with factor variables
+regression 
+replay regression with coeflegend option
+test 3.industry, etc.
+testparm
+
+recode many categories to few, then i.
+outreg2
+
+label values, then i.
+then outreg2
+
+Simple interaction term
+interactions with factor variables
+replace, coefl
+
+
+* Week 2
+Illustrate last week's regressions with graphs
+Maybe do these together - don't break them up into two weeks. 
+For each concept, graph and analysis together?
+Better for statistical concepts, worse for Stata learning.
+Or, do graphs first, analysis second?
+
+
+
+

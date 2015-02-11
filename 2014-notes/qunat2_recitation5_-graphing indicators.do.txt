@@ -1,0 +1,112 @@
+/*******************************************************************************
+Recitation 5: Graphing Indicators and Interactions 
+SWBAT: 
+- Produce appropriate graphs to illustrate indicator variables and interactions
+
+
+*******************************************************************************/
+
+*Warm Up (attached)
+
+* When we use indicators, we're usually interested in looking at how the
+* average of some variable changes for different groups.
+
+
+clear
+webuse nhanes2
+
+
+* For example, is female height different from male height?
+reg height female
+* or 
+bysort female: sum height
+
+
+* The way we look at this graphically is with bar charts
+graph bar (mean) height, over(sex)
+
+
+* How does sytolic blood pressure change with age? 
+graph bar (mean) bpsystol , over(agegrp)
+
+
+* Interactions between indicator variables let us look at differences
+* over two dimensions, such as diabetic and seniors
+* From last week:
+recode age (20/64=0 "Under 65") (65/74=1 "65+") , gen(senior)
+
+* How do Cholesterol levels change for seniors and diabetics?
+
+gen sen_diabetes = senior*diabetes
+
+regress tcresult diabetes senior sen_diabetes
+
+* Is the difference in Cholesterol level between diabetics and non-diabetics 
+* different for seniors vs. non-seniors?
+graph bar (mean) tcresult , over(diabetes) over(senior)
+
+* Add value labels 
+label define diabetes 0 "Not diabetic" 1 "Diabetic"
+label values diabetes diabetes
+graph bar (mean) tcresult , over(diabetes) over(senior)
+
+* What about interactions with continuous variables?
+
+* Height and Hemoglobin:
+twoway scatter hgb height
+
+
+* Look at two populations, black and non-black 
+twoway 	(scatter hgb height if black==0)	///
+ 	(scatter hgb height if black==1)
+
+
+* Linear fit for each population separately
+twoway 	(scatter hgb height if black==0)	///
+	(scatter hgb height if black==1)	///
+	(lfit hgb height if black==0) 					///
+	(lfit hgb height if black==1) 					///
+	
+
+graph export hemo_height_black.png , replace 
+
+
+* Example with interaction
+regress hgb height black
+predict predicted_hgb 
+
+twoway 	(scatter hgb height if black==0)	///
+	(scatter hgb height if black==1)	///
+	(scatter predicted_hgb height)	
+		
+* Example with interaction
+gen height_black = height*black
+regress hgb height black height_black
+predict predicted_hgb_Int
+
+
+twoway 	(scatter hgb height if black==0)	///
+	(scatter hgb height if black==1)	///
+	(scatter predicted_hgb_Int height)	
+
+
+* Allow a break-point based on age:
+twoway 	(scatter bpsystol age) 	///
+	(lfit bpsystol age if age<50) 			///
+	(lfit bpsystol age if age>=50) 			///
+		
+
+graph export bp_by_age.png , replace 
+
+
+*Practice Problems
+
+* For Problem set, cover:
+* How to export / save as graphs for inclusion in Word
+
+
+
+
+
+
+
