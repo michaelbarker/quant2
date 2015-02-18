@@ -1,6 +1,54 @@
+
+Note on Redistribution of ICPSR Data. 
+	- Note: ICPSR terms of use limit redistribution of data
+	- Not a good choice, unless data set is already in the format we want to use in class.
+	- Technically, we can not resave the data set in another format and redistribute through Blackboard. 
+	- Actually, it seems we can redistribute the data. The terms of use state: 
+
+		Redistribution of Data	
+			You agree not to redistribute data or other materials without the written agreement of ICPSR, unless:
+			 - You serve as the OFFICIAL or DESIGNATED REPRESENTATIVE at an ICPSR MEMBER INSTITUTION and are assisting AUTHORIZED USERS with obtaining data, or
+			 - You are collaborating with other AUTHORIZED USERS to analyze the data for research or instructional purposes.
+			When sharing data or other materials in these approved ways, you must include all accompanying files with the data, including terms of use. More information on permission to redistribute data can be found on the ICPSR Web site.
+
+		Definitions
+			authorized user: A faculty member, staff member, or student at a member institution
+
+	- Georgetown is a member institution, so we are authorized users collaborating with other authorized users for instructional purposes.
+
+
 Opinion Data: Many categorical variables, few or no continuous variables, individual data, repeated cross-sections for multiple countries, 
 Afrobarometer
 Arab barometer
 World Values Survey – No redistribution, must register and download from website
 HMDA – county level mortgage data
+NCAA data on gender equality in sports: http://ope.ed.gov/athletics/dataFiles/EADA%202013-2014.zip
+NCAA data on academic progress ICPSR_26801
+
+
+www.data.gov : Many many different types of interesting and unusual data sets:
+	- Time to answer on SSA National 800 Number Network
+	- Types of information requested from SSA
+	- Preferred language requests of SSA claimants
+	- Product Recalls 
+	- Transportation safety
+	- Energy use, cost, and potential for generation
+	- Nursing home bed census
+	- Radon tests by county in NY State
+	- Food Service inspection violations in NY State
+	- Consumer Complaint Database
+	- Key indicators on regional public transit systems
+	- Tornados
+	- Occupational Injuries and Illnesses 
+	- Highway and Traffic safety 
+	- Tire standards
+	- Hate crimes
+	- Assaults on law enforcement
+	- Correctional Facility populations
+	- Marine pollution
+	- Pipeline spills and incidents
+	- Mine violations
+	- Jail Census
+	- Fire Incident and Cause data
+
 
