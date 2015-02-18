@@ -13,6 +13,10 @@ tab classification_name
 keep if strmatch(classification_name, "*NCAA*")
 
 * 3. Classify Colleges and Universities
+
+* Drop mining schools or other special cases. 
+
+/*
 gen unicol = 0
 * First Round
 replace unicol = 1 if strmatch(institution_name, "*University*")
@@ -28,17 +32,32 @@ replace unicol = 1 if strmatch(institution_name, "*LIU*")
 * More Colleges
 replace unicol = 2 if strmatch(institution_name, "*Academy*")
 replace unicol = 2 if strmatch(institution_name, "*School*")
+*/
 
 
 * 4. Recode sports categories without labels
+encode Sports, gen(sportid)
+label list sportid
+
+recode sportid (1/15 = 1) (16/25 = 2) (26/max = 3), gen(sportcat)
 
 * 5. Bar Graph
-
-* 6. Add value labels and re-run bar graph
+graph bar (mean) TOTAL_REVENUE_ALL TOTAL_EXPENSE_ALL, over(sportcat)
 
 * 7. Suppose we want to run a regression on sports categories
 * Begin one way:
 * Instead use factor variables
+regress TOTAL_REVENUE_ALL i.sportcat
+
+* 8. Testing using factor variables
+regress , coefl
+testparm i.sportcat
+
+* 6. Add value labels and re-run bar graph
+recode sportid (1/15 = 1 "Sport 1") (16/25 = 2 "Sport 2") (26/max = 3 "Sport 3"), gen(sportcat)
+graph bar (mean) TOTAL_REVENUE_ALL TOTAL_EXPENSE_ALL, over(sportcat)
+
+* 9. 
 
 * Outreg2 
 * Show value labels on output.
