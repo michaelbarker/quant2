@@ -2,6 +2,9 @@
 McCourt School of Public Policy, Georgetown University
 
 ### Overview
+This project will focus on categorical variables.
+In quant class, you've likely discussed categorical variables such as race and highest level of education completed.
+
 We will be investigating data collected from college athletic programs. 
 Look for Download Data files on the page linked below.
 http://ope.ed.gov/athletics
@@ -16,7 +19,7 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
 ## Week 1: 
 ### Key Ideas:
 
- - Categorical variables: Data management, graphing, and analysis 
+ - Categorical variables: analysis, graphing, and data management
  - Import excel data into Stata
 
 ### Key Commands / Concepts:
@@ -30,16 +33,106 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
 
 ### Questions
 
-2.1. Download the data set and documentation from the website given above.  
-Extract all files into a new folder for this project. 
-The files we are interested in are Schools.xlsx and SchoolsDoc2014.doc.
-Open Stata and set up your new do-file, including a command to change the working directory to the location where you extracted the data files.
+2.1. 
+ - Download the data set and documentation from the website given above.  
+ - Extract all files into a new folder for this project. 
+ - The files we are interested in are Schools.xlsx and SchoolsDoc2014.doc.
+ - Open Stata and set up your new do-file, including a command to change the working directory to the location where you extracted the data files.
  - Open the data file Schools.xlsx in Stata using either the dialogue window or the `import excel` command.
  - If you used the dialogue window, be sure to include the resulting `import excel` command in your do-file.
  - Verify that the variable names were imported correctly.
  - Verify that your data set has 17,134 observations and 128 variables.
  - What does one observation in this data set represent? (Hint: `browse institution_name Sports`)
- - The id variables in this data set are `institution_name` and  `Sports`. Use the `order` command to move these two variables to the first two columns of the data set. For more information on the `order` command, type `help order`.   
+ - The id variables in this data set are `institution_name` and  `Sports`. 
+ - Use the `order` command to move these two variables to the first two columns of the data set. 
+ - For more information on the `order` command, type `help order`.   
+
+2.2. 
+ - Suppose we want to run a regression of total expense for each sport on the size of the academic institution.
+ - We can judge size by the number of enrolled students, `EFTotalCount`.
+ - We want to include school size as a categorical variable with three values:
+ - Small = 0 to 999 students, Medium = 1000 to 4999 students, and Large = 5000 or more students.
+ - Create two new dummy variables for medium and large schools.
+ - Run a regression of total expenditure, `TOTAL_EXPENSE_ALL` on the school-size dummies, leaving small schools as the baseline category.
+ - Instead of creating dummy variables directly, first create a new categorical variable for the different school sizes. 
+ - The new variable should have values of 1 for small schools, 2 for medium schools, and 3 for large schools.
+ - This new categorical variable can be used for graphing.
+ - Create a bar graph of total expenditure and total revenue over each school category.
+
+2.3. 
+ - Typically, to run regressions on categorical variables, first you create dummies, then you include the dummies in the regression.
+ - But, a better approach is to first create a new categorical variable for the categories you want.
+ - Then, Stata has shortcuts to create dummy variables automatically. 
+ - First, we will see how this approach works. Then we will see several examples where this approach makes things easier. 
+ - Create a new categorical variable called `schoolsize` based on school size using the categories above.
+ - The new variable should have values of 1 for small schools, 2 for medium schools, and 3 for large schools.
+ - Confirm the creation of your new variable with a two-way tabulation.
+ - Run the following regression and compare the results to the previous regression:
+ ```
+ regress TOTAL_EXPENSE_ALL i.schoolsize
+ ```
+ - This is called factor variable notation. Details can be found on the help page: `help fvvarlist`.
+ 
+2.4. Details of factor variables 
+ - When you use factor variable notation, Stata creates a hidden dummy variable for each category of the original variable.
+ - You can see the names of the hidden dummy variables by replaying the previous regression results with the option `coeflegend`.
+ - Look up the `coeflegend` on the help page for regress to see a description of the option.
+ - Try it out by typing: `regress , coeflegend`.
+ - The name of each hidden dummy variable appears between the brackets, e.g. _b[2.schoolsize]
+ - You can use these dummy variable names directly in some commands. 
+ - Try it out: `list EFTotalCount schoolsize 1.schoolsize 2.schoolsize 3.schoolsize in 1/50` 
+
+2.5 
+ - Postestimation testing with factor variables.
+ - Suppose you want to test the hypothesis that the coefficients on medium and large schools are jointly equal to zero.
+ - Unfortunately, the test command does not recognize factor variable notation. 
+ - Rerun (or replay) the previous regression and try: `test i.schoolsize`
+ - Instead, you have to use the names of the hidden dummy variables that we used in Question 2.4.
+ - Test the hypothesis that the coefficients on 2.schoolsize and 3.schoolsize are jointly equal to zero.
+ - You can also test this hypothesis using `testparm`, an alternate version of the `test` command. 
+ - The `testparm` version of the command accepts factor variables, so you can just use `i.schoolsize` directly.
+ - Retry the hypothesis test of `i.schoolsize` using `testparm` instead of `test`.
+ - Notice the names of the hidden dummy variables appear in the output of the testparm command, where the two hypotheses being tested are listed.
+ - The command name `testparm` is not easy to remember, but it is listed on the help page for `test`.
+ - So if you ever need to remember the `testparm` command, just look at: `help test`. 
+
+
+2.5 
+ - Examine the existing categorical variable, `sector_name`. Suppose we want to run a regression of total revenue on the dummy variables for each sector.  
+ - Try regressing `TOTAL_REVENUE_ALL` on the categories of `sector_name` using factor variable notation (i.). 
+ - You should receive an error, because `sector_name` is a string variable.
+ - The i. notation can only be used with numeric variables. 
+ - This is a very common problem when transfering data from Excel to Stata.
+ - You could create a new numeric variable manually, like this:
+```
+gen sectorid = .
+replace sectorid = 1 if sector_name=="
+replace sectorid = 1 if sector_name=="
+etc...
+```
+But, there is a much easier way, using the command `encode`.
+Review the help page for this command: `help encode`.
+Use the encode command to create a new, labeled numeric variable called `sectorid`.
+Regress `TOTAL_REVENUE_ALL` on `sectorid` using factor variable notation. 
+
+2.7 Testing 
+
+2.8 Bar graph
+
+2.9 Labels/Recode 
+
+2.10 Bonus 
+The combination of encode and factor variables can greatly simplify difficult tasks.  
+They are particularly important when considering many categories. 
+Let's look at the profitability of each type of sports program.
+Create a new variable equal to total revenue - total expenditure.
+Create a horizontal bar graph of average profit over all different sports.
+
+2.7 
+Run a regression of total profit on a set of dummy variables representing all sports.
+Hint: First use `encode` on the `Sports` variable, then use factor variable notation.
+
+
 
 2.2. Graphing with Categorical Variables 
 Make an hbar graph of something
@@ -65,74 +158,5 @@ Give partial recode command
 
 2.6. Add labels to your recode command
 Then re-run bar graph and regressions
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-2.2. First Sample Selection
-We want to limit the analysis sample to a subset of schools. 
-First, consider the variable `sector_name`, which describes the category of the academic institution.
-Based on this variable, limit the sample to 4-year institutions that are publically owned or non-profit.
-You can use either the `keep` or `drop` command to do this.
-Make sure you consider the storage type of the variable (string or numeric).
-You may want to use copy/paste to make sure you don't make any mistakes when you type the various values of `sector_name`.
- - Use the variable `sector_name` to limit the sample to nonprofit and public 4-year institutions.
- - Verify that your data set now has 13,708 observations.
-
-
-
-
-
-
-
-
-
-
-
-2.3. Second Sample Selection
-We will continue to refine our sample based on `classification_name`. 
-There are several organizations that set rules for college athletics. 
-This variable specifies the governing body that each institution belongs to.
-We want to keep only schools that belong to the "NCAA", in any division.
-Like `sector_name`, this variable is a string, but it has many entries. 
-We don't want to have to type all of those entries, so we will use a short-cut.
-We will keep only those schools where the letters "NCAA" appear anywhere in the name.
-We will use the string function `strmatch()`. 
-Read about this function, and other string functions, on the help page for string functions.
-```
-help string functions
-describe classification_name
-tab classification_name
-tab classification_name if strmatch(classification_name, "*NCAA*")
-keep if strmatch(classification_name, "*NCAA*")
-```
-There are several schools we want to drop based on institution_name.
-We don't think that mining or maritime schools are comparable to the other schools in our sample.
-Use the `strmatch()` function to drop these two type of schools.
- - Drop all schools that have the word "Mines" in their name. 
- - Use the strmatch() function to drop schools that have the word "Maritime" in their name. 
-
-
-
-
-
-
-
-
-
-
-This variable 
 
 
