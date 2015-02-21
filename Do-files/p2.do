@@ -6,8 +6,10 @@ order institution_name Sports , first
 
 * 2. Sample Selection
 * Keep only 4-year Public and Private Universities
-tab sector_name
+tab sector_name, m
 keep if sector_name=="Private nonprofit, 4-year or above" | sector_name=="Public, 4-year or above"
+tab sector_name, m
+stop
 * Keep only NCAA-governed athletic programs
 tab classification_name
 keep if strmatch(classification_name, "*NCAA*")
