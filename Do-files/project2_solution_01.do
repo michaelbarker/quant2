@@ -17,7 +17,9 @@ replace medSchool = . if EFTotalCount ==.
 replace largeSchool = . if EFTotalCount ==.
 *verify dummies
 tab  medSchool , missing
+bysort medSchool: summarize EFTotalCount
 tab  largeSchool, missing
+bysort largeSchool: summarize EFTotalCount
 
 reg TOTAL_EXPENSE_ALL medSchool largeSchool
 
