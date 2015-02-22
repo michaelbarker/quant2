@@ -1,174 +1,105 @@
-* Tell Stata not pause for -more- messages
-set more off
+clear
 
-*1.2
-* Change working directory
+cd "....."
 
-* Mac style
-* cd "/Users/hoya99/MSPP/Stata_Recitation/quant2/Data/"
+// 2.1 Import, verify, and reorder
+import excel using Schools.xlsx, clear firstrow
+*so each observation is a sport at a particular school
+order institution_name Sports
 
-* Windows style
-* cd "C:\Users\hoya99\MSPP\Stata_Recitation\quant2\Data"
+// 2.2
+* creating dummies
+gen medSchool = 0
+gen largeSchool = 0
+replace medSchool = 1 if EFTotalCount >=1000 & EFTotalCount <4999
+replace largeSchool = 1 if EFTotalCount >=5000
+replace medSchool = . if EFTotalCount ==.
+replace largeSchool = . if EFTotalCount ==.
+*verify dummies
+tab  medSchool , missing
+tab  largeSchool, missing
 
-use "NAMCS2010.dta", clear
+reg TOTAL_EXPENSE_ALL medSchool largeSchool
 
-*1.3
-* Change variable name to lower case
-rename *, lower
+// 2.3 bar graph
+*creating school categorical variable
+gen schoolsize = .
+replace schoolsize = 1 if EFTotalCount >=0 & EFTotalCount < 1000
+replace schoolsize = 2 if EFTotalCount >=1000 & EFTotalCount <4999
+replace schoolsize = 3 if EFTotalCount >=5000 & EFTotalCount !=.
 
-* Get mean and median of age
-sum age, detail
+*check categorical against dummies
+tab2 schoolsize largeSchool medSchool
 
-* Get mode of age
-* Get 5 most common ages
-tab age, sort
+*bar graph
+graph bar (mean) TOTAL_REVENUE_ALL (mean) TOTAL_EXPENSE_ALL, over(schoolsize)
 
-* Histogram 1
-* histogram age
+// 2.4
+reg TOTAL_EXPENSE_ALL i.schoolsize
+help fvvarlist
 
-* Histogram 2
-* histogram age, discrete normal
+// 2.5
+regress, coeflegend
 
-* Check missing values of age
-tab age, m
+list EFTotalCount schoolsize 1.schoolsize 2.schoolsize 3.schoolsize in 1/50
 
-* Check missing values of all variables
-misstable summarize
+// 2.6
+regress
+*  test i.schoolsize - test does not recognize i notation
+test 2.schoolsize 3.schoolsize
+testparm i.schoolsize
 
-* Patient race
-tab raceun
+// 2.7
+* reg TOTAL_REVENUE_ALL i.sector_name - can only use i.notation with numeric vars
+encode sector_name, gen(sectorid)
+tab sectorid
+tab sectorid, nolabel
+regress TOTAL_REVENUE_ALL i.sectorid
 
-* Relationship between sex and race
-tab2 sex raceun, chi2
-* Ans: the null hypothesis that the two attributes are 
-* independent of each other is rejected.
+// 2.8
+reg, coeflegend
+test 3.sectorid 5.sectorid
+test 2.sectorid 3.sectorid 4.sectorid 5.sectorid 6.sectorid
+*or
+testparm i.sectorid
 
-*1.4
-* Drop patients if their age is less than 18 years old.
-drop if age<18
+// 2.9
+graph bar (mean) TOTAL_REVENUE_ALL (mean) TOTAL_EXPENSE_ALL, over(sectorid)
+graph bar (mean) TOTAL_REVENUE_ALL (mean) TOTAL_EXPENSE_ALL, over(sectorid) horizontal
 
-*1.5
-* Height and weight?
-lookfor weight
-lookfor height
+// 2.10
+recode EFTotalCount (0/999 = 1 "Small") (1000/4999 = 2 "Medium") (5000/max = 3 "Large") , gen(schoolsize2)
 
-*1.6
-* Numeric with lable
-codebook wtlb
+egen numparticipants = rowtotal(PARTIC_MEN PARTIC_WOMEN)
+sum numparticipants, detail
+* so 17 26 41 seem like cut offs
+recode numparticipants  (0/17 = 1 "Small Team") (18/26 = 2 "Mid-Small Team") (27/41 = 3 "Mid-Large Team") (42/max = 4 "Large Team"), gen(categorical_participants)
+tab numparticipants, missing
+	
+graph bar (mean) TOTAL_EXPENSE_ALL, over(categorical_participants)
+reg TOTAL_EXPENSE_ALL i.categorical_participants
 
-* tabulate command without value labels.
-tab wtlb
-tab wtlb, nolabel
-tab htin
-tab htin, nolabel
-*  get the label values with describe
-des wtlb
-label list WTLBF
-des htin
-label list HTINF
+// 2.11 - expansion
+	* outreg2 everything
+	* Show value labels on output
 
-* Recode "Blank" as missing
-codebook wtlb
-replace wtlb=. if wtlb==-9
-replace htin=. if htin==-9
+	*from 2.2
+	reg TOTAL_EXPENSE_ALL medSchool largeSchool
+	outreg2
 
-* Max and min
-sum wtlb htin
+	*from 2.3
+	label  define schoolsize 1 "small" 2 "medium" 3 "large"
 
-* Hint: Use mvdecode to generate missing values
-* mvdecode varlist, mv(-9)
+	*from 2.4
+	reg TOTAL_EXPENSE_ALL i.schoolsize
+	outreg2
 
-*1.7
-* Recode "Missing data" or "Not calculated" as Stata missing value (.)
-des bmi
-label list BMIF
-replace bmi=. if bmi==-9 | bmi==-7
-
-* Log variables
-gen bmi_log=log(bmi)
-gen wtlb_log=log(wtlb)
-gen htin_log=log(htin)
-
-* Label new variables
-label variable htin_log "Log value of Height in inches"
-label variable wtlb_log "Log value of Weight in pounds"
-label variable bmi_log "Log value of Body-Mass index"
-
-* Summarize the three original and three log variables in a single table.
-* Verify observation number
-sum bmi bmi_log wtlb wtlb_log htin htin_log, sep(2)
-
-*1.8
-* Get codebook of usetobac
-codebook usetobac
-
-* Generate dummy variable
-gen current_tobac=.
-replace current_tobac=1 if usetobac==2
-replace current_tobac=0 if usetobac==1
-
-* two-way tabulation with missing value
-tab2 usetobac current_tobac,m
-
-* Generate overweight dummy variable
-gen overwt=.
-replace overwt=1 if bmi>=27 & bmi!=.
-replace overwt=0 if bmi<27
-
-* two-way tabulation with missing value
-tab bmi overwt,m
-
-* both overweight and current tobacco users
-gen overwt_current_tobac=0
-replace overwt_current_tobac=1 if current_tobac==1 & overwt==1
-replace overwt_current_tobac=. if current_tobac==. | overwt==.
-
-* twoway tab
-tab overwt current_tobac
-* one-way tab
-tab overwt_current_tobac
-
-*1.9
-* Examine missing values
-codebook age htin wtlb bmi bpsys
-
-* Recode -9 in bpsys to .
-replace bpsys=. if bpsys==-9
-
-* regression of systolic blood pressure on age, height, weight, and bmi.
-reg bpsys age htin wtlb bmi
-
-* test coefficients
-test wtlb
-
-*1.10
-* Generate BMI
-gen bmi2=(0.453592*wtlb)/(0.0254*htin)^2
-
-* new variable compare to the existing BMI variable
-sum bmi bmi2
-
-* Difference between bmi and bmi2
-gen diffbmi=bmi-bmi2
-
-* Browse them all
-* browse bmi bmi2 diffbmi
-
-* Summary of diffbmi
-sum diffbmi
-
-* Histogram of diffbmi
-* histogram diffbmi
-
-* Round bmi2 to bmi
-gen bmi3=floor(bmi2)
-replace diffbmi=bmi-bmi3
-* browse bmi bmi3 diffbmi
-
-* Hint: compare
-compare bmi bmi2
-
-assert _N==3885
-
+	*from 2.7
+	regress TOTAL_REVENUE_ALL i.sectorid
+	outreg2
+	
+	*from 2.10
+	reg TOTAL_EXPENSE_ALL i.categorical_participants
+	outreg2
 
 
