@@ -1,11 +1,9 @@
 
 * 1. Import, verify, and reorder
 import excel using Schools.xlsx, clear firstrow
-bysort sector_name: gen numsports = _N
-drop if numsports < 100
-tab sector_name , m
-drop if sector_name==
 
+encode sector_name, gen(sectorid)
+regress TOTAL_REVENUE_ALL i.sectorid
 
 
 * 4. Recode sports categories without labels
@@ -14,7 +12,7 @@ label list sportid
 
 recode sportid (1/15 = 1) (16/25 = 2) (26/max = 3), gen(sportcat)
 
-* 5. Bar Graph
+* 5. Bar Graph	
 graph bar (mean) TOTAL_REVENUE_ALL TOTAL_EXPENSE_ALL, over(sportcat)
 
 * 7. Suppose we want to run a regression on sports categories

@@ -25,15 +25,14 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
 ### Key Commands / Concepts:
 
  - import excel
- - encode/decode
  - bar graph 
  - factor variable notation (help fvvarlist)
+ - encode/decode
  - recode 
- - string functions
 
 ### Questions
 
-2.1. 
+2.1 Import Excel Data 
  - Download the data set and documentation from the website given above.  
  - Extract all files into a new folder for this project. 
  - The files we are interested in are Schools.xlsx and SchoolsDoc2014.doc.
@@ -47,33 +46,38 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
  - Use the `order` command to move these two variables to the first two columns of the data set. 
  - For more information on the `order` command, type `help order`.   
 
-2.2. 
- - Suppose we want to run a regression of total expense for each sport on the size of the academic institution.
+2.2 Regression on Dummy Variables 
+ - Suppose we want to consider the relationship between total expenditure on sports programs on the size of the academic institution.
  - We can judge size by the number of enrolled students, `EFTotalCount`.
- - We want to include school size as a categorical variable with three values:
- - Small = 0 to 999 students, Medium = 1000 to 4999 students, and Large = 5000 or more students.
+ - We don't think the relationship with size is completely linear, so we want to control for size categories instead.
+ - Size categories: Small = 0 to 999 students, Medium = 1000 to 4999 students, and Large = 5000 or more students.
+ - One way to accomplish this would be to create dummy variables 
  - Create two new dummy variables for medium and large schools.
+ - Verify each new variable with a two-way tabulation, reporting any missing values that exist.
  - Run a regression of total expenditure, `TOTAL_EXPENSE_ALL` on the school-size dummies, leaving small schools as the baseline category.
- - Instead of creating dummy variables directly, first create a new categorical variable for the different school sizes. 
- - The new variable should have values of 1 for small schools, 2 for medium schools, and 3 for large schools.
- - This new categorical variable can be used for graphing.
- - Create a bar graph of total expenditure and total revenue over each school category.
-
-2.3. 
- - Typically, to run regressions on categorical variables, first you create dummies, then you include the dummies in the regression.
- - But, a better approach is to first create a new categorical variable for the categories you want.
- - Then, Stata has shortcuts to create dummy variables automatically. 
- - First, we will see how this approach works. Then we will see several examples where this approach makes things easier. 
- - Create a new categorical variable called `schoolsize` based on school size using the categories above.
+  
+2.3 Bar Graph 
+ - Suppose we want to look at this data graphically.
+ - You can use a bar graph to visualize the relationship shown in the regression above. 
+ - A bar graph will show the average value of variable(s) for each category of school size.
+ - To create a bar graph, we need a single categorical variable with three values depending on school size. 
+ - Create a new categorical variable called `schoolsize` based on school size using the categories from the previous question.
  - The new variable should have values of 1 for small schools, 2 for medium schools, and 3 for large schools.
  - Confirm the creation of your new variable with a two-way tabulation.
+ - Create a bar graph showing the average total expenditure and average total revenue for each school category.
+
+2.4 Factor Variables 
+ - The previous two questions have shown two ways of representing categorical data.
+ - The same information can be represented as a series of dummy variables or as a single categorical variable. 
+ - When working in Stata, it is generally better to use a single categorical variable, rather than constructing dummies. 
+ - You need dummies for regression, but Stata has tools for creating these dummy variables automatically. 
  - Run the following regression and compare the results to the previous regression:
  ```
  regress TOTAL_EXPENSE_ALL i.schoolsize
  ```
  - This is called factor variable notation. Details can be found on the help page: `help fvvarlist`.
  
-2.4. Details of factor variables 
+2.5 Details of factor variables 
  - When you use factor variable notation, Stata creates a hidden dummy variable for each category of the original variable.
  - You can see the names of the hidden dummy variables by replaying the previous regression results with the option `coeflegend`.
  - Look up the `coeflegend` on the help page for regress to see a description of the option.
@@ -82,12 +86,11 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
  - You can use these dummy variable names directly in some commands. 
  - Try it out: `list EFTotalCount schoolsize 1.schoolsize 2.schoolsize 3.schoolsize in 1/50` 
 
-2.5 
- - Postestimation testing with factor variables.
+2.6 Postestimation testing with factor variables
  - Suppose you want to test the hypothesis that the coefficients on medium and large schools are jointly equal to zero.
  - Unfortunately, the test command does not recognize factor variable notation. 
  - Rerun (or replay) the previous regression and try: `test i.schoolsize`
- - Instead, you have to use the names of the hidden dummy variables that we used in Question 2.4.
+ - Instead, you have to use the names of the hidden dummy variables that we saw in Question 2.4.
  - Test the hypothesis that the coefficients on 2.schoolsize and 3.schoolsize are jointly equal to zero.
  - You can also test this hypothesis using `testparm`, an alternate version of the `test` command. 
  - The `testparm` version of the command accepts factor variables, so you can just use `i.schoolsize` directly.
@@ -97,9 +100,10 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
  - So if you ever need to remember the `testparm` command, just look at: `help test`. 
 
 
-2.5 
- - Examine the existing categorical variable, `sector_name`. Suppose we want to run a regression of total revenue on the dummy variables for each sector.  
- - Try regressing `TOTAL_REVENUE_ALL` on the categories of `sector_name` using factor variable notation (i.). 
+2.7 Encode String Variables 
+ - Examine the existing categorical variable, `sector_name`. 
+ - Suppose we want to run a regression of total revenue on the dummy variables for each sector.  
+ - Try regressing `TOTAL_REVENUE_ALL` on the categories of `sector_name` using factor variable notation (i.sector_name). 
  - You should receive an error, because `sector_name` is a string variable.
  - The i. notation can only be used with numeric variables. 
  - This is a very common problem when transfering data from Excel to Stata.
@@ -110,53 +114,39 @@ replace sectorid = 1 if sector_name=="
 replace sectorid = 1 if sector_name=="
 etc...
 ```
-But, there is a much easier way, using the command `encode`.
-Review the help page for this command: `help encode`.
-Use the encode command to create a new, labeled numeric variable called `sectorid`.
-Regress `TOTAL_REVENUE_ALL` on `sectorid` using factor variable notation. 
+ - But, there is a much easier way, using the command `encode`.
+ - Review the help page for this command: `help encode`.
+ - Use the encode command to create a new, labeled numeric variable called `sectorid`.
+ - Regress `TOTAL_REVENUE_ALL` on `sectorid` using factor variable notation. 
 
-2.7 Testing 
+2.7 Test and testparm 
+ - Use the `regress , coeflegend` command to replay the regression results showing the factor variable names.
+ - Test the hypothesis that the coefficient on private nonprofit 2-year schools is equal to the coefficient on public two-year schools.
+ - Test the hypothesis that the coefficients on all 5 dummy variables are jointly equal to zero.
 
 2.8 Bar graph
+ - Create a bar graph of average total revenue and average total expenditure over the categories of sectorid. 
+ - When you have many categories, a horizontal bar graph is often more clear.
+ - Change your bar graph to a horizontal layout. 
 
 2.9 Labels/Recode 
+ - Notice the value labels of `sectorid` are automatically included in regression output and bar graphs. 
+ - You can add value labels manually, using the commands `label define` and `label values`.
+ - Alternatively, the `recode` command provides a way to recode variables and label them in one step. 
+ - Here is an example using the recode command to generate the school size categorical variable. 
+```
+recode EFTotalCount (0/999 = 1 "Small") (1000/4999 = 2 "Medium") (5000/max = 3 "Large") , gen(schoolsize)
+``` 
+ - Create a new categorical variable based on the number of participants in each type of sport including male and female teams.
+ - First, add the number of participants in the two variables, `PARTIC_MEN` and `PARTIC_WOMEN`.
+ - Hint: Consider an egen function to deal with missing values.
+ - Choose the cutoff values for the new variable to divide the data into quartiles.
+ - Make sure your new variable has value labels.
+ - Verify the creation of your variable with a two-way tabulation.
+ - Create a bar graph and run a regression of your choosing with your new categorical variable.
 
-2.10 Bonus 
-The combination of encode and factor variables can greatly simplify difficult tasks.  
-They are particularly important when considering many categories. 
-Let's look at the profitability of each type of sports program.
-Create a new variable equal to total revenue - total expenditure.
-Create a horizontal bar graph of average profit over all different sports.
-
-2.7 
-Run a regression of total profit on a set of dummy variables representing all sports.
-Hint: First use `encode` on the `Sports` variable, then use factor variable notation.
-
-
-
-2.2. Graphing with Categorical Variables 
-Make an hbar graph of something
-
-2.3 Encode ID Variables
-The ID variables in this data set are currently strings (How do you know that?).
-For many things that we do in Stata, ID variables should be numbers, not strings. 
-Stata provides the `encode` and `decode` functions to convert between strings and labeled numbers.
-For details on these functions, see `help encode`
- - Create two new labeled numeric variables based on the existing id variables, `institution_name` and `Sports`.
- - Name the two new variables `schoolid` and `sportid`.
- - Order the new variables so they are at the beginning of the data set.
-
-2.4. Factor Variable Regression
-help fvvarlist
-
-2.4. Condense Sports Categories using Recode
-Consider the variable `Sports`. 
-classify by frequency
-Give partial recode command 
-
-2.5. Rerun bar graph and regression with new categories
-
-2.6. Add labels to your recode command
-Then re-run bar graph and regressions
+2.10 Reporting Results
+ - Go back through your do-file and add outreg2 commands to create a table (or multiple tables) reporting your regression results.
+ - Use the `label` option to use value labels for your factor variables.
 
 
