@@ -2,6 +2,8 @@ clear
 
 cd "....."
 
+set more off
+
 // 2.1 Import, verify, and reorder
 import excel using Schools.xlsx, clear firstrow
 *so each observation is a sport at a particular school
@@ -76,7 +78,7 @@ egen numparticipants = rowtotal(PARTIC_MEN PARTIC_WOMEN)
 sum numparticipants, detail
 * so 17 26 41 seem like cut offs
 recode numparticipants  (0/17 = 1 "Small Team") (18/26 = 2 "Mid-Small Team") (27/41 = 3 "Mid-Large Team") (42/max = 4 "Large Team"), gen(categorical_participants)
-tab numparticipants, missing
+tab categorical_participants, missing
 	
 graph bar (mean) TOTAL_EXPENSE_ALL, over(categorical_participants)
 reg TOTAL_EXPENSE_ALL i.categorical_participants
