@@ -1,8 +1,6 @@
 
 * 1. Import, verify, and reorder
-import excel using Schools.xlsx, clear firstrow
-
-encode sector_name, gen(sectorid)
+ * do "C:\Users\mdb96\git\msppstata\quant2\Do-files\project2_solution_01.do" 
 regress TOTAL_REVENUE_ALL i.sectorid
 
 gen profit = TOTAL_REVENUE_ALL-TOTAL_EXPENSE_ALL
@@ -31,20 +29,20 @@ recode sportid ///
 	(4 24 = 1 "Base/Softball") ///
 	(5 = 2 "Basketball") ///
 	(12 = 3 "Football") ///
-	(23 = 5 "Soccer") ///
-	(nonmissing=10 "Other") ///
+	(23 = 4 "Soccer") ///
+	(nonmissing=5 "Other") ///
 	, gen(sportcat)
 
 tab sportcat, m
 
 tab sportid sportcat, m
-
+/*
 * 5. Bar Graph	
 graph bar (mean) TOTAL_REVENUE_ALL TOTAL_EXPENSE_ALL, over(sportcat)
 graph bar (mean) TOTAL_REVENUE_ALL TOTAL_EXPENSE_ALL, over(categorical_participants)
 
 graph hbar (mean) TOTAL_REVENUE_ALL TOTAL_EXPENSE_ALL, over(sportcat) over(categorical_participants) 
-
+*/
 * 7. Suppose we want to run a regression on sports categories
 * Begin one way:
 * Instead use factor variables
@@ -68,7 +66,6 @@ recode EFTotalCount (0/999 = 1 "Small") (1000/4999 = 2 "Medium") (5000/max = 3 "
 egen numparticipants = rowtotal(PARTIC_MEN PARTIC_WOMEN)
 sum numparticipants, detail
 * so 17 26 41 seem like cut offs
-recode numparticipants  (0/17 = 1 "Small Team") (18/26 = 2 "Mid-Small Team") (27/41 = 3 "Mid-Large Team") (42/max = 4 "Large Team"), gen(categorical_participants)
 tab numparticipants, missing
 
 graph hbar (mean) profit, over(sportcat) over(schoolsize)
@@ -80,9 +77,8 @@ graph hbar (mean) profit, over(sportcat) over(schoolsize)
 
 . 
 gen revperpart = TOTAL_REVENUE_ALL / numparticipants
-graph hbar (mean) revperpart expperpart , over(sportcat) over(schoolsize)
+* graph hbar (mean) revperpart expperpart , over(sportcat) over(schoolsize)
 
-TOTAL_REVENUE_ALL
 
 gen multicoach = (SUM_TOTAL_HDCOACH>1)
 graph hbar (mean) profit, over(multicoach) 
@@ -97,6 +93,7 @@ gen femhdcoach = SUM_FTHDCOACH_FEM>0 | SUM_PTHDCOACH_FEM>0
 tab femhdcoach
 graph hbar (mean) profit, over(femhdcoach) 
 graph hbar (mean) profit, over(femhdcoach) 	over(sportcat) 
+
 graph hbar (mean) TOTAL_REVENUE_ALL TOTAL_EXPENSE_ALL , over(femhdcoach)
 graph hbar (mean) TOTAL_REVENUE_ALL TOTAL_EXPENSE_ALL , over(femhdcoach) 	over(sportcat) 
 graph hbar (mean) TOTAL_REVENUE_ALL TOTAL_EXPENSE_ALL , over(femhdcoach) 	over(schoolsize) 
@@ -116,16 +113,57 @@ gen profperstudent = profit / EFTotalCount
 twoway scatter profperstudent EFTotalCount
 separate profperstudent , by(schoolsize)
 twoway scatter profperstudent1-profperstudent3 EFTotalCount
+twoway (lfit profperstudent1 EFTotalCount) (lfit profperstudent2 EFTotalCount) (lfit profperstudent3 EFTotalCount)
 drop profperstudent1-profperstudent3 
 
 gen partprofit = profit / numparticipants
 twoway (scatter partprofit EFTotalCount) (lfit partprofit EFTotalCount) 
 separate partprofit , by(schoolsize)
 twoway (scatter partprofit1-partprofit3 EFTotalCount) 
+twoway (scatter partprofit1-partprofit3 EFTotalCount) (lfit partprofit1 EFTotalCount) (lfit partprofit2 EFTotalCount) (lfit partprofit3 EFTotalCount)
+
 
 twoway scatter TOTAL_REVENUE_ALL numparticipants
 separate TOTAL_REVENUE_ALL , by(schoolsize) gen(rev_)
 twoway scatter rev_* numparticipants
 
-gen asscoach = 
+separate profit , by(ftfemcoach) gen(prof_)
+twoway scatter prof_* TOTAL_REVENUE_ALL
+twoway (scatter prof_* TOTAL_EXPENSE_ALL) (lfit prof_0 TOTAL_EXPENSE_ALL) (lfit prof_1 TOTAL_EXPENSE_ALL)
+
+regress profit TOTAL_REVENUE_ALL ftfemcoach  c.TOTAL_REVENUE_ALL#ftfemcoach 
+
+twoway scatter prof_* numparticipants
+twoway (scatter prof_* numparticipants) (lfit prof_0 numparticipants) (lfit prof_1 numparticipants)
+
+regress profit numparticipants ftfemcoach  c.numparticipants#ftfemcoach 
+
+local var TOTAL_EXPENSE_ALL
+twoway scatter prof_* `var'
+local var "TOTAL_EXPENSE_ALL"
+twoway (scatter prof_* `var') (lfit prof_0 `var') (lfit prof_1 `var')
+regress profit `var' ftfemcoach  c.`var'#ftfemcoach 
+
+
+local var EFTotalCount
+twoway scatter prof_* `var'
+local var "EFTotalCount"
+twoway (scatter prof_* `var') (lfit prof_0 `var') (lfit prof_1 `var')
+regress profit `var' ftfemcoach  c.`var'#ftfemcoach 
+
+local yvar "profit"
+local cvar "numparticipants"
+local dvar "sportcat"
+capture: drop `yvar'_*
+separate `yvar' , by(`dvar') gen(`yvar'_) short
+twoway scatter `yvar'_* `cvar' , scheme(sj)
+regress `yvar' `cvar'
+regress `yvar' `cvar' i.`dvar'  `cvar'#`dvar' 
+predict `yvar'_pr 
+separate `yvar'_pr , by(`dvar') gen(`yvar'_pr_) short
+twoway line `yvar'_pr_* `cvar' 
+
+capture: drop prof_*
+separate profit , by(sportcat) gen(prof_)
+twoway scatter prof_* numparticipants
 

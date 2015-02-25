@@ -16,18 +16,22 @@ http://ope.ed.gov/athletics/dataFiles/EADA%202013-2014.zip
 Background information on this data can be found here:
 http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
 
-## Week 1: 
+## Week 2: 
 ### Key Ideas:
 
  - Interaction terms 
- -  
 
 ### Key Commands / Concepts:
-
+ 
+ - factor variables (help fvvarlist)
+ - encode
+ - recode
+ - separate
 
 ### Questions
 
-2.11 Sport profitability 
+
+#### 2.12 Sport profitability 
  - Last week we looked at two continuous outcome variables: total revenue and total expenditures.
  - This week, we will look at total profit.
  - Create a new variable for total profit for each sports team, equal to (total revenue - total expenditure).
@@ -36,7 +40,8 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
  - Are most college sports teams profitable?
  - Which type of sports team is the most profitable, on average?
 
-2.12 Sport categories 
+
+#### 2.13 Sport categories 
  - We are interested in the profitability of different types of sports, but there are currently too many different sports here.
  - We need to group some sports together into larger categories.
  - First, use the `encode` command to create a labeled numeric variable named `sportid`.
@@ -52,7 +57,7 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
  - Verify your variable creation with the following command: `bysort sportcat: tab sportid, m` 
  - Create a bar graph of total revenue and total expenses over the new sport categories.
 
-2.13 Female Head Coach
+#### 2.14 Female Head Coach
  - Investigate the following two variables: 
    - `SUM_FTHDCOACH_FEM` Number of full-time female head coaches for sports team 
    - `SUM_PTHDCOACH_FEM` Number of part-time female head coaches for sports team 
@@ -60,7 +65,7 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
  - Create a bar graph showing average profit for teams with a female head coach and for those without a female head coach.
  - Are teams with a female head coach profitable, on average?
 
-2.14 Categorical-Categorical Interactions 
+#### 2.15 Categorical-Categorical Interactions 
  - As we saw last week, the idea behind dummy variables is to allow the average value of a variable to change over categories.
  - Categorical-categorical interaction terms allow the average value of a variable to change for every unique combination of the categories. 
  - Suppose we want to look at the average profit of teams with and withoug a female head coach, separately for each sport category. 
@@ -68,84 +73,47 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
  - Create a bar graph of average profitability over `femhdcoach`, then over `sportcat`. 
  - Is the relationship between having a female head coach and team profit the same for each sport category? 
 
-2.15 Factor Variable Interactions
+#### 2.16 Factor Variable Interactions
  - Interaction terms, like dummy variables, can be included in a regression using factor variable notation.  
  - To include interaction terms, just include both variable names, jointed by the symbol `#`.
  - You also need to include the dummy variables using `i.` notation, so each variable name will appear twice.
  - Run a regression of profit on sport category dummies, the female head coach dummy, and interactions for all sports.
  - One interaction term is omitted, because there are no football teams with female head coaches.
  
-2.16 Testing Interactions 
+#### 2.17 Testing Interactions 
  - Testing factor variable interaction terms works just like testing factor variable dummy variables.
  - You can use the `coeflegend` option to get the names of individual interaction coeffiecients.
  - Or you can test all the interactions as a group using the `testparm` command.
  - Test the null hypothesis that 
  - Test the null hypothesis that all the interaction terms are jointly equal to zero.
 
+#### 2.18 Continuous-Categorical Interactions
+ - Consider a relationship between two continous variables 
+ - Continuous-categorical interactions allow this relationship to change for the different categories.
+ - As an example, let's look at the relationship between team profit and number of participants.
+ - Visualize this relationship with a scatter plot combined with a linear fit plot.
+ - Run a simple bivariate regression of profit on number of participants.
+ - These results suggest that, as the number of participants increases, profit will also increase.
+ - We've seen that different sports have very different average profit levels, so it is likely that this relationship is different for different sports.
+ - A convenient tool for graphing this relationship over different sports is the `separate` command. 
 
-
-
-2.6 Postestimation testing with factor variables
- - Suppose you want to test the hypothesis that the coefficients on medium and large schools are jointly equal to zero.
- - Unfortunately, the test command does not recognize factor variable notation. 
- - Rerun (or replay) the previous regression and try: `test i.schoolsize`
- - Instead, you have to use the names of the hidden dummy variables that we saw in Question 2.4.
- - Test the hypothesis that the coefficients on 2.schoolsize and 3.schoolsize are jointly equal to zero.
- - You can also test this hypothesis using `testparm`, an alternate version of the `test` command. 
- - The `testparm` version of the command accepts factor variables, so you can just use `i.schoolsize` directly.
- - Retry the hypothesis test of `i.schoolsize` using `testparm` instead of `test`.
- - Notice the names of the hidden dummy variables appear in the output of the testparm command, where the two hypotheses being tested are listed.
- - The command name `testparm` is not easy to remember, but it is listed on the help page for `test`.
- - So if you ever need to remember the `testparm` command, just look at: `help test`. 
-
-
-2.7 Encode String Variables 
- - Examine the existing categorical variable, `sector_name`. 
- - Suppose we want to run a regression of total revenue on the dummy variables for each sector.  
- - Try regressing `TOTAL_REVENUE_ALL` on the categories of `sector_name` using factor variable notation (i.sector_name). 
- - You should receive an error, because `sector_name` is a string variable.
- - The i. notation can only be used with numeric variables. 
- - This is a very common problem when transfering data from Excel to Stata.
- - You could create a new numeric variable manually, like this:
 ```
-gen sectorid = .
-replace sectorid = 1 if sector_name=="
-replace sectorid = 1 if sector_name=="
-etc...
+separate profit , by(sportcat) gen(prof_*) shortlabel
+browse sportcat profit prof_*
+twoway scatter prof_* numparticipants
 ```
- - But, there is a much easier way, using the command `encode`.
- - Review the help page for this command: `help encode`.
- - Use the encode command to create a new, labeled numeric variable called `sectorid`.
- - Regress `TOTAL_REVENUE_ALL` on `sectorid` using factor variable notation. 
+    
+#### 2.19 Continuous-Categorical Factor Variables
+ - Use the factor variables to regress profit on number of participants, sport category dummies, and interaction terms for number of participants and each sports category. 
+ - Your regression should include nine independent variables plus a constant term.
+ - When you are using factor variable notation with continuous variables, you must put `c.` in front of the variable name.
 
-2.7 Test and testparm 
- - Use the `regress , coeflegend` command to replay the regression results showing the factor variable names.
- - Test the hypothesis that the coefficient on private nonprofit 2-year schools is equal to the coefficient on public two-year schools.
- - Test the hypothesis that the coefficients on all 5 dummy variables are jointly equal to zero.
-
-2.8 Bar graph
- - Create a bar graph of average total revenue and average total expenditure over the categories of sectorid. 
- - When you have many categories, a horizontal bar graph is often more clear.
- - Change your bar graph to a horizontal layout. 
-
-2.9 Labels/Recode 
- - Notice the value labels of `sectorid` are automatically included in regression output and bar graphs. 
- - You can add value labels manually, using the commands `label define` and `label values`.
- - Alternatively, the `recode` command provides a way to recode variables and label them in one step. 
- - Here is an example using the recode command to generate the school size categorical variable. 
-```
-recode EFTotalCount (0/999 = 1 "Small") (1000/4999 = 2 "Medium") (5000/max = 3 "Large") , gen(schoolsize)
-``` 
- - Create a new categorical variable based on the number of participants in each type of sport including male and female teams.
- - First, add the number of participants in the two variables, `PARTIC_MEN` and `PARTIC_WOMEN`.
- - Hint: Consider an egen function to deal with missing values.
- - Choose the cutoff values for the new variable to divide the data into quartiles.
- - Make sure your new variable has value labels.
- - Verify the creation of your variable with a two-way tabulation.
- - Create a bar graph and run a regression of your choosing with your new categorical variable.
-
-2.10 Reporting Results
- - Go back through your do-file and add outreg2 commands to create a table (or multiple tables) reporting your regression results.
- - Use the `label` option to use value labels for your factor variables.
+#### 2.20 Graphing Predicted Values 
+ - You may want to create fitted lines to visualize the relationship between profit and number of participants for different categories.
+ - It is easiest to do this using predicted values after the interacted regression. 
+ - Follow these steps to generate a graph with fitted lines for each category.
+ - Use the `predict` command to generate predicted values from the previous regression.
+ - Use the `separate` command to separate the predicted values into new variables, by `sportcat`.
+ - Create a twoway line graph of the new variables by number of participants. 
 
 
