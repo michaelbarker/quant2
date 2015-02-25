@@ -110,8 +110,8 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
  - You could create a new numeric variable manually, like this:
 ```
 gen sectorid = .
-replace sectorid = 1 if sector_name=="
-replace sectorid = 1 if sector_name=="
+replace sectorid = 1 if sector_name=="Private for-profit, 2-year"
+replace sectorid = 2 if sector_name=="Private for-profit, 4-year or above"
 etc...
 ```
  - But, there is a much easier way, using the command `encode`.
@@ -119,17 +119,17 @@ etc...
  - Use the encode command to create a new, labeled numeric variable called `sectorid`.
  - Regress `TOTAL_REVENUE_ALL` on `sectorid` using factor variable notation. 
 
-2.7 Test and testparm 
+2.8 Test and testparm 
  - Use the `regress , coeflegend` command to replay the regression results showing the factor variable names.
  - Test the hypothesis that the coefficient on private nonprofit 2-year schools is equal to the coefficient on public two-year schools.
  - Test the hypothesis that the coefficients on all 5 dummy variables are jointly equal to zero.
 
-2.8 Bar graph
+2.9 Bar graph
  - Create a bar graph of average total revenue and average total expenditure over the categories of sectorid. 
  - When you have many categories, a horizontal bar graph is often more clear.
  - Change your bar graph to a horizontal layout. 
 
-2.9 Labels/Recode 
+2.10 Labels/Recode 
  - Notice the value labels of `sectorid` are automatically included in regression output and bar graphs. 
  - You can add value labels manually, using the commands `label define` and `label values`.
  - Alternatively, the `recode` command provides a way to recode variables and label them in one step. 
@@ -145,7 +145,7 @@ recode EFTotalCount (0/999 = 1 "Small") (1000/4999 = 2 "Medium") (5000/max = 3 "
  - Verify the creation of your variable with a two-way tabulation.
  - Create a bar graph and run a regression of your choosing with your new categorical variable.
 
-2.10 Reporting Results
+2.11 Reporting Results
  - Go back through your do-file and add outreg2 commands to create a table (or multiple tables) reporting your regression results.
  - Use the `label` option to use value labels for your factor variables.
 
