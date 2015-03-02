@@ -137,6 +137,8 @@ graph hbar (mean) profit, over(femhdcoach) 	over(sportcat)
 char sportcat[omit] 1
 xi: reg profit i.sportcat femhdcoach i.sportcat*femhdcoach
 
+* Or,
+reg profit i.sportcat i.femhdcoach femhdcoach#sportcat
 // 2.17
 reg, coeflegend
 test 1b.sportcat#1.femhdcoach==4.sportcat#1.femhdcoach
