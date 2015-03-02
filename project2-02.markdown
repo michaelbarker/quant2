@@ -84,7 +84,7 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
  - Testing factor variable interaction terms works just like testing factor variable dummy variables.
  - You can use the `coeflegend` option to get the names of individual interaction coeffiecients.
  - Or you can test all the interactions as a group using the `testparm` command.
- - Test the null hypothesis that 
+ - Test the null hypothesis that the interaction term of female and baseball is equal to the coefficient the female and soccer interaction.
  - Test the null hypothesis that all the interaction terms are jointly equal to zero.
 
 #### 2.18 Continuous-Categorical Interactions
@@ -98,14 +98,14 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
  - A convenient tool for graphing this relationship over different sports is the `separate` command. 
 
 ```
-separate profit , by(sportcat) gen(prof_*) shortlabel
+separate profit , by(sportcat) gen(prof_) shortlabel
 browse sportcat profit prof_*
 twoway scatter prof_* numparticipants
 ```
     
 #### 2.19 Continuous-Categorical Factor Variables
  - Use the factor variables to regress profit on number of participants, sport category dummies, and interaction terms for number of participants and each sports category. 
- - Your regression should include nine independent variables plus a constant term.
+ - Your regression should include nine independent variables plus a constant term, for a total of 10 coefficients.
  - When you are using factor variable notation with continuous variables, you must put `c.` in front of the variable name.
 
 #### 2.20 Graphing Predicted Values 

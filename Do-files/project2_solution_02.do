@@ -111,7 +111,7 @@ graph bar (mean) profit, over(Sports) horizontal
 // 2.13 Sport Categories with recode
 encode Sports, gen(sportid)
 * see help recode
-recode sportid  (5 24 = 1 "Baseball/Softball") ///
+recode sportid  (4 24 = 1 "Baseball/Softball") ///
 						(5 = 2 Basketball) ///
 						(12 = 3 Football) ///
 						(23 = 4 Soccer) ///
