@@ -84,7 +84,7 @@ http://www2.ed.gov/finaid/prof/resources/athletics/eada.html
  - Testing factor variable interaction terms works just like testing factor variable dummy variables.
  - You can use the `coeflegend` option to get the names of individual interaction coeffiecients.
  - Or you can test all the interactions as a group using the `testparm` command.
- - Test the null hypothesis that the interaction term of female and baseball is equal to the coefficient the female and soccer interaction.
+ - Test the null hypothesis that the interaction term of female and baseball is equal to the coefficient for the female and soccer interaction.
  - Test the null hypothesis that all the interaction terms are jointly equal to zero.
 
 #### 2.18 Continuous-Categorical Interactions
