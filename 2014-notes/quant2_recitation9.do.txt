@@ -1,0 +1,121 @@
+/*******************************************************************************
+  Recitation 9: Margins
+ 
+ SWBAT: 
+ - Use Margins after Probit/Logit
+
+ - More examples:
+ - more examples, multiple x variables, 
+ - clarify predicted probability vs marg eff
+ 
+*******************************************************************************/
+
+clear
+use fringe.dta
+
+* If you've covered Probit and Logit in class, you've learned that you 
+* can't interpret coefficients the same way as OLS coefficients.
+
+* Today we will talk about two ways to interpret results from these model
+* using the margins postestimation command.
+
+* For our example model, we will look at the relationship between wages
+* and the probability of union membership. 
+
+* This method works the same way for Probit or Logit.
+* We will use probit for this example.
+
+* Note: For logit, use "invlogit()" in place of "normprob()"
+* help invlogit()
+
+probit union hrearn
+
+* We can interpret the sign and significance of these coefficients,
+* but not the magnitude.
+
+* To get a sense of the magnitude, we have to see how the predicted 
+* probability of union membership changes as hrearn changes. 
+
+* We can only calculate a predicted probability at a single point.
+* Lets start with the predicted probability at the average value of hrearn: 
+summarize hrearn
+* Redisplay coefficient estimates again:
+probit
+* Combine the estimated coefficients with the average value of hrearn
+display normprob(-.6122607 + .0218454 * 6.229286)
+
+* What happens to this predicted probability if the the mean of hrearn
+* changes by one unit?
+display normprob(-.6122607 + .0218454 * 7.229286)
+
+* So the change in predicted probabilities, calculated at the mean, is:
+display .3247942-.31697327
+* 0.78 percentage points
+
+* Margins can do all of these calculations for us:
+* Calculate predicted probability at the mean:
+* Manual calculation:
+display normprob(-.6122607 + .0218454 * 6.229286)
+* Margins command:
+margins , atmeans
+* Don't worry about the _cons label. The relavent information is at the top,
+* after Expression: and at:
+
+* Calculate the predicted probability at hrearn=7.229286
+* Manual calculation:
+display normprob(-.6122607 + .0218454 * 7.229286)
+* Margins command:
+margins , at(hrearn=7.229286)
+
+* Change in predicted probability at the means:
+* Manual calculation:
+display .3247942-.31697327
+* Margins command:
+margins , dydx(hrearn) atmeans
+
+* Note: without the dydx option, margins calculates predicted values.
+* With the dydx() option, margins calculates the change in predicted values. 
+
+
+* Instead of calculating predicted probabilities at the average values
+* of hrearn, we could calculate the predicted probabilities for 
+* every individual in the data set, using each specific value of hrearn.
+
+* We saw how to do this two weeks ago, with the predict command. 
+predict pr_union, pr
+
+* Now we have a predicted value at each value of hrearn.
+browse hrearn pr_union
+
+* What happens to each predicted probability when hrearn goes up by 
+* one unit for everyone?
+generate hrearn_plus = hrearn + 1
+
+* Because we are using a new variable that was not in our original model,
+* we have to generate predicted probabilities manually:
+* Redisplay our coefficient estimates
+probit
+generate pr_union_plus = normprob(-.6122607 + .0218454 * hrearn_plus)
+* Now we have predicted probabilities for hrearn, and hrearn_plus
+browse hrearn pr_union hrearn_plus pr_union_plus
+
+* How did the predicted probability change for each person?
+generate pr_union_change = pr_union_plus - pr_union
+browse pr_union pr_union_plus pr_union_change
+
+* But we can't report all of these changes, 
+* Let's look at the overall mean of all of the individual changes:
+summarize pr_union_change
+
+* This calculation will get tedious as we increase the number of regressors.
+* Luckily, the margins command will do the calculation for us:
+margins, dydx(hrearn)
+* Margins estimate is more accurate, so they are slightly different.
+* This calculation gives the average marginal effect
+
+* It is slightly different from our earlier calculation, which 
+* gives us the marginal effect at the mean:
+margins, dydx(hrearn) atmeans
+
+
+
