@@ -19,7 +19,8 @@ browse if numbermissing > 0
 gen  nomiss = 0
 replace nomiss = 1 if numbermissing==0
 
-summarize grantamt model if nomiss==1
+summarize grantamt if nomiss==1
+tab model if nomiss==1
 
 * Step 2: Create missing variable dummies
 * Fill actual missing values with zero 
@@ -65,5 +66,17 @@ help quotes
 display `"sum grantamt if inlist(state, `states') "'
 sum grantamt if inlist(state, `states')
 
+ foreach food in carrots pasta soup salad {
+	 display "Today, I want to eat `food'"
+ }
+local nextnumber 5
+generate x_`nextnumber' = `nextnumber'
 
-
+local mynumber 4
+display "The local macro named mynumber is equal to: `mynumber'"
+display "The command I am trying to run is: generate x_4 = `mynumber'"
+generate x_4 = `mynumber'
+local nextnumber 5
+display "The local macro named nextnumber is equal to: `nextnumber'"
+display "The command I am trying to run is: generate x_`nextnumber' = `nextnumber'"
+generate x_`nextnumber' = `nextnumber'

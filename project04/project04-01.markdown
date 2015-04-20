@@ -1,4 +1,4 @@
-# Project 4: School Improvement 2010 Grants 
+# Project 4: Nhanes2 
 McCourt School of Public Policy, Georgetown University
 
 ### Overview
@@ -30,7 +30,7 @@ once you learn how to use them.
 
 ### Questions
 
-3.1 Download and import data 
+####4.1 Download and import data 
  - Download data from `http://catalog.data.gov/dataset/school-improvement-2010-grants`
  - Or, go to data.gov and search for "School Improvement 2010 Grants".
  - The data set is named: `userssharedsdfschoolimprovement2010grants.csv`.
@@ -41,7 +41,7 @@ once you learn how to use them.
  - You should also include an option to treat the first row as variable names. 
 
 
-3.2 Destring 
+####4.2 Destring 
  - Consider the variable, `v5`.
  - This variable did not get a proper variable name, because the variable name in the `.csv` file began with a number.
  - Stata does not allow variable names to begin with a number, so leaves the name as `v5`. 
@@ -53,7 +53,7 @@ once you learn how to use them.
  - Use the `generate()` option to create a new numeric variable name `grantamt`.
  - Use a second option to ignore the non-numeric character, `$`, that caused this variable to be imported as a string.
 
-3.3 Encode
+####4.3 Encode
  - Consider the variable `modelselected`.
  - This variable was correctly imported as a string variable.
  - We still must transform it into a numeric variable before analysis, but not using `destring`.
@@ -62,7 +62,7 @@ once you learn how to use them.
  - You've used `encode` in previous projects. See `help encode` to review the command.
  - Use `encode` to generate a numeric variable called `model`, with labeled categories corresponding to those in `modelselected`.
 
- 3.4 Missing Data
+####4.4 Missing Data
  - Summarize your two new variables, `grantamt` and `model`. 
  - Do they have the same number of observations? Why or why not?
  - Use the command `misstable summarize` to get more detailed information on missing values for these two variables. 
@@ -70,7 +70,7 @@ once you learn how to use them.
  - Remember, in Stata the missing value `.`, is the largest number Stata can hold. So if an observation is `<.`, it is non-missing. 
  - Examine the observations with missing data: `browse if grantamt==. | model==.`.
 
-3.5 Non-missing Sample
+####4.5 Non-missing Sample
  - Suppose you want to produce summary statistics only for those observations that have no missing data.
  - This is a very common task that must be done with almost any data analysis project. 
  - In this simple example, you could use the same approach we used with the previous `browse` command: `summarize grantamt model if grantamt!=. & model!=.`
@@ -83,7 +83,7 @@ once you learn how to use them.
  - Summarize `grantamt` and tabulate `model` for the non-missing sample only.
  - Both tables should report 757 observations.
 
-3.6 Missing Dummies
+####4.6 Missing Dummies
  - Another very common data procedure for missing values is to create missing-value dummy variables.
  - Once missing-value dummies are created, the original missing values may be replaced with zeros.
  - You will learn more about the reasoning behind these processes and when they are appropriate in quant class.
@@ -96,7 +96,7 @@ replace grantamt = 0 if grantamt==.
 browse if miss_grantamt==1
 ```
 
-3.7 Looping over variables
+####4.7 Looping over variables
  - Working with data, you can spend a lot of time typing a series of repetitive commands for many variables.
  - The previous task of creating missing value dummies is a good example.
  - When you encounter this type of problem, the fastest and easiest way to proceed is to find a command that can operate on a `varlist`.
@@ -113,7 +113,7 @@ recode grantamt model (.=0)
  - Try to find a command that produces one-way tabulations and accepts a `varlist`.
  - Use this command to produce one-way tabulations of both of the missing-value dummy variables, `miss_*`. 
 
-3.8 Local macros
+####4.8 Local macros
  - Of course, you can't always find a pre-programmed command to do exactly what you need to do.
  - You may need to write your own loop to automate repetitive commands.
  - Loops in Stata are based on `local macros`, or `locals`, so you must understand those before you can understand loops. 
@@ -134,7 +134,7 @@ local nextnumber 5
 generate x_`nextnumber' = `nextnumber'
 ```
 
-3.9 Display
+####4.9 Display
  - When you start using `locals`, it is easy to make mistakes, and it's not always easy to figure out where the problem is.
  - When you encounter a problem, first make sure the contents of your local are what you think they are.
  - The `display` command is very useful for this.
@@ -153,7 +153,7 @@ generate x_`nextnumber' = `nextnumber'
 ```
  - Modify these commands to make two new variables, `x_6` and `x_7`, that contain the values 6 and 7, respectively. 
 
-3.10 foreach Loops
+####4.10 foreach Loops
  - Suppose we wanted to make `x_' variables for all numbers 1-10. 
  - You could paste the same commands and just change the local value each time:
  ```
